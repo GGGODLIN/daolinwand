@@ -27,6 +27,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import { LoginScreen } from './screens/LoginScreen'
+import { LocalizationProvider } from './locales/LocaleContext';
 
 
 
@@ -41,7 +42,9 @@ const App: () => Node = () => {
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar backgroundColor={'#000'} />
-      <LoginScreen />
+      <LocalizationProvider>
+        <LoginScreen />
+      </LocalizationProvider>
     </SafeAreaView>
   );
 };

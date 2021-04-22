@@ -10,8 +10,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.12.1",
     "react": "17.0.1",
-    "react-native": "0.64.0"
+    "react-native": "0.64.0",
+    "react-native-localization": "^2.1.6",
+    "react-native-localize": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
