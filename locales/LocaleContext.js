@@ -21,7 +21,7 @@ const languages = {
 
 const themes = {
   light: {
-    color: '#444',
+    color: '#000',
     backgroundColor: '#fff',
     borderColor: '#e7e7e7',
     shadowColor: '#222222',
@@ -47,6 +47,9 @@ const complexTheme = {
     },
     invalid: {
       color: '#727272'
+    },
+    lightBackground: {
+      backgroundColor: '#f3f9f9'
     }
   },
   dark: {
@@ -59,9 +62,27 @@ const complexTheme = {
     },
     invalid: {
       color: '#969696'
+    },
+    lightBackground: {
+      backgroundColor: '#f3f9f9'
     }
   }
 }
+
+const componentStylesHelper = (themeStyle) => ({
+  shadowBox: {
+    shadowColor: themeStyle?.color ?? '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+    borderRadius: 5
+  }
+})
 
 const t = new LocalizedStrings(languages); // 4
 
@@ -75,6 +96,7 @@ export const LocalizationContext = createContext({ // 5
   initializeAppTheme: () => { },
   themeStyle: themes.dark,
   complexTheme: complexTheme.light,
+  componentStyles: componentStylesHelper(themes.light)
 });
 
 export const LocalizationProvider = ({ children }) => { // 9
@@ -82,6 +104,7 @@ export const LocalizationProvider = ({ children }) => { // 9
   const [appTheme, setAppTheme] = useState(useColorScheme() ?? 'light');
   const [themeStyle, setThemeStyle] = useState(themes?.[`${useColorScheme() ?? 'light'}`]);
   const [complexThemeStyle, setComplexThemeStyle] = useState(complexTheme?.[`${useColorScheme() ?? 'light'}`]);
+  const [componentStyles, setComponentStyles] = useState(componentStylesHelper(themes?.[`${useColorScheme() ?? 'light'}`]));
 
 
   // 11
@@ -95,6 +118,7 @@ export const LocalizationProvider = ({ children }) => { // 9
     setAppTheme(theme);
     setThemeStyle(themes?.[`${theme ?? 'light'}`])
     setComplexThemeStyle(complexTheme?.[`${theme ?? 'light'}`])
+    setComponentStyles(componentStylesHelper(themes?.[`${theme ?? 'light'}`]))
     AsyncStorage.setItem('appTheme', theme);
   };
 
@@ -156,7 +180,8 @@ export const LocalizationProvider = ({ children }) => { // 9
         appTheme,
         initializeAppTheme,
         themeStyle,
-        complexTheme
+        complexTheme: complexThemeStyle,
+        componentStyles
       }}>
       {children}
     </LocalizationContext.Provider>
