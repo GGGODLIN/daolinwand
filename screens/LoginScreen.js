@@ -4,7 +4,9 @@ import {
     Text,
     useColorScheme,
     View,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert,
+    DeviceEventEmitter
 } from 'react-native';
 import { LocalizationContext } from '../locales/LocaleContext';
 import { StyledText } from '../components/StyledText';
@@ -13,7 +15,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import LinearGradient from 'react-native-linear-gradient';
 import * as WeChat from 'react-native-wechat-lib';
 
-export const LoginScreen = () => {
+export const LoginScreen = (props) => {
     const {
         t,
         appLanguage,
@@ -27,13 +29,23 @@ export const LoginScreen = () => {
     } = useContext(LocalizationContext)
 
 
-    useEffect(() => {
-        initializeAppLanguage()
-    }, [])
+    // useEffect(() => {
+    //     initializeAppLanguage()
+    //     DeviceEventEmitter.addListener('WeChat_Resp', resp => {
+    //         console.log('res:', resp)
+    //         if (resp.type === 'WXLaunchMiniProgramReq.Resp') { // 从小程序回到APP的事件
+    //             console.log('WXLaunchMiniProgramReq.Resp', resp)
+    //         } else if (resp.type === 'SendMessageToWX.Resp') { // 发送微信消息后的事件
+    //             console.log('SendMessageToWX.Resp', resp)
+    //         } else if (resp.type === 'PayReq.Resp') { // 支付回调
+    //             console.log('PayReq.Resp', resp)
+    //         }
+    //     });
+    // }, [])
 
     useEffect(() => {
         (async () => {
-            let isRegisterApp = await WeChat.registerApp('1111771316', 'universalLink')
+            let isRegisterApp = await WeChat.registerApp('1111771316', 'https://www.google.com')
             console.log('isRegisterApp2', isRegisterApp)
         })();
     }, []);
@@ -68,7 +80,44 @@ export const LoginScreen = () => {
                         ]}
                         onPress={async () => {
                             setAppLanguage('zh-Hans-CN')
-                            console.log('1111771316', await WeChat.isWXAppInstalled(), await WeChat.openWXApp())
+                            //console.log('isWXAppSupportApi', await WeChat.openWXApp())
+                            let scope = 'snsapi_userinfo';
+                            let state = 'UR0162UEVNof0uIK';
+                            console.log("sending auth request for scope ", scope)
+                            //  WeChat.shareText({
+                            //     text: 'Text content.',
+                            //     scene: 0,
+                            // });
+                            props?.setIsLogin?.(true)
+                            WeChat.sendAuthRequest("snsapi_userinfo", state)
+                                .then(responseCode => {
+                                    //返回code码，通过code获取access_token
+                                    console.log('responseCode', responseCode)
+                                })
+                                .catch(err => {
+                                    console.log('err', err)
+                                })
+
+                            //判断微信是否安装
+                            // WeChat.isWXAppInstalled()
+                            //     .then(async (isInstalled) => {
+                            //         if (isInstalled) {
+                            //             //发送授权请求
+                            //             //console.log("shareText ", await WeChat.shareText({ text: 'Hello', scene: 2 }))
+                            //             console.log("sending auth request for scope ", scope)
+                            //             WeChat.sendAuthRequest("snsapi_userinfo", state)
+                            //                 .then(responseCode => {
+                            //                     //返回code码，通过code获取access_token
+                            //                     console.log('responseCode', responseCode)
+                            //                 })
+                            //                 .catch(err => {
+                            //                     console.log('err', err)
+                            //                 })
+
+
+
+                            //         }
+                            //     })
 
                         }}
                     >

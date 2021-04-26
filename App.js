@@ -6,8 +6,8 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import type { Node } from 'react';
+import 'react-native-gesture-handler';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -28,10 +28,11 @@ import {
 
 import { LoginScreen } from './screens/LoginScreen'
 import { LocalizationProvider } from './locales/LocaleContext';
+import AppNavigator from './navigation/AppNavigator'
 
 
 
-const App: () => Node = () => {
+export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
@@ -39,11 +40,13 @@ const App: () => Node = () => {
     flex: 1
   };
 
+  const [isLogin, setIsLogin] = useState(false);
+
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar backgroundColor={'#000'} />
       <LocalizationProvider>
-        <LoginScreen />
+        {isLogin ? <AppNavigator /> : <LoginScreen setIsLogin={setIsLogin} />}
       </LocalizationProvider>
     </SafeAreaView>
   );
@@ -68,4 +71,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
