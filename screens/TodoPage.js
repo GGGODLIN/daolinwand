@@ -12,7 +12,7 @@ import { LocalizationContext } from '../locales/LocaleContext';
 import { StyledText } from '../components/StyledText';
 import { StyledContainer } from '../components/StyledContainer';
 
-export const HomeScreen = () => {
+export const TodoPage = () => {
     const {
         t,
         appLanguage,
@@ -29,8 +29,8 @@ export const HomeScreen = () => {
 
     return (
         <>
-            <StyledContainer >
-
+            <StyledContainer>
+                <Text>Todo</Text>
             </StyledContainer>
         </>
     );

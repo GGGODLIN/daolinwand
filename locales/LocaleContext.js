@@ -6,13 +6,14 @@ import * as RNLocalize from 'react-native-localize'; // 3
 import en from './en';
 import zh from './zh';
 import zh_cn from './zh_cn';
+import i18n from 'i18n-js'
 
 const DEFAULT_LANGUAGE = 'en-US';
 const APP_LANGUAGE = 'appLanguage';
 
 const languages = {
-  en,
   zh,
+  en,
   'en-US': { ...en },
   'zh-Hans-CN': { ...zh_cn },
   'zh-Hant-TW': { ...zh },
@@ -22,7 +23,7 @@ const languages = {
 const themes = {
   light: {
     color: '#000',
-    backgroundColor: '#fff',
+    backgroundColor: '#f3f9f9',
     borderColor: '#e7e7e7',
     shadowColor: '#222222',
 
@@ -50,6 +51,9 @@ const complexTheme = {
     },
     lightBackground: {
       backgroundColor: '#f3f9f9'
+    },
+    mainThemeColor: {
+      color: '#137775',
     }
   },
   dark: {
@@ -65,11 +69,14 @@ const complexTheme = {
     },
     lightBackground: {
       backgroundColor: '#f3f9f9'
+    },
+    mainThemeColor: {
+      color: '#137775',
     }
   }
 }
 
-const componentStylesHelper = (themeStyle) => ({
+const componentStylesHelper = (themeStyle, complexTheme) => ({
   shadowBox: {
     shadowColor: themeStyle?.color ?? '#000',
     shadowOffset: {
@@ -87,7 +94,7 @@ const componentStylesHelper = (themeStyle) => ({
 const t = new LocalizedStrings(languages); // 4
 
 export const LocalizationContext = createContext({ // 5
-  t,
+  t: () => { },
   setAppLanguage: () => { }, // 6
   appLanguage: DEFAULT_LANGUAGE, // 7
   initializeAppLanguage: () => { }, // 8
@@ -96,17 +103,22 @@ export const LocalizationContext = createContext({ // 5
   initializeAppTheme: () => { },
   themeStyle: themes.dark,
   complexTheme: complexTheme.light,
-  componentStyles: componentStylesHelper(themes.light)
+  componentStyles: componentStylesHelper(themes.light, complexTheme.light)
 });
 
 export const LocalizationProvider = ({ children }) => { // 9
+
+  i18n.translations = languages
+
   const [appLanguage, setAppLanguage] = useState(DEFAULT_LANGUAGE);
   const [appTheme, setAppTheme] = useState(useColorScheme() ?? 'light');
   const [themeStyle, setThemeStyle] = useState(themes?.[`${useColorScheme() ?? 'light'}`]);
   const [complexThemeStyle, setComplexThemeStyle] = useState(complexTheme?.[`${useColorScheme() ?? 'light'}`]);
-  const [componentStyles, setComponentStyles] = useState(componentStylesHelper(themes?.[`${useColorScheme() ?? 'light'}`]));
+  const [componentStyles, setComponentStyles] = useState(componentStylesHelper(themes?.[`${useColorScheme() ?? 'light'}`], complexTheme?.[`${useColorScheme() ?? 'light'}`]));
 
-
+  const i18n_t = (scope, options) => {
+    return i18n.t(scope, { locale: appLanguage, ...options })
+  }
   // 11
   const setLanguage = language => {
     t.setLanguage(language);
@@ -118,7 +130,7 @@ export const LocalizationProvider = ({ children }) => { // 9
     setAppTheme(theme);
     setThemeStyle(themes?.[`${theme ?? 'light'}`])
     setComplexThemeStyle(complexTheme?.[`${theme ?? 'light'}`])
-    setComponentStyles(componentStylesHelper(themes?.[`${theme ?? 'light'}`]))
+    setComponentStyles(componentStylesHelper(themes?.[`${theme ?? 'light'}`], complexTheme?.[`${theme ?? 'light'}`]))
     AsyncStorage.setItem('appTheme', theme);
   };
 
@@ -172,7 +184,7 @@ export const LocalizationProvider = ({ children }) => { // 9
   return (
     <LocalizationContext.Provider
       value={{
-        t,
+        t: i18n_t,
         setAppLanguage: setLanguage, // 10
         appLanguage,
         initializeAppLanguage,

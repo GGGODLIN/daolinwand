@@ -5,6 +5,12 @@ const zh_cn = {
         wechatLogin: '微信一键登录',
         userAgree: '登录即表示同意',
         agreement: '云展用户协议'
+    },
+    tabBarLabel: {
+        homeStack: '家庭',
+        roomStack: '房间',
+        sceneStack: '智能',
+        profileStack: '我的',
     }
 }
 

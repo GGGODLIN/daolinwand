@@ -52,10 +52,10 @@ export const LoginScreen = (props) => {
 
     return (
         <>
-            <View style={{ flex: 1, backgroundColor: '#137775' }}>
+            <View style={{ flex: 1, backgroundColor: complexTheme?.mainThemeColor.color }}>
                 <View style={{ marginTop: '60%', marginLeft: 10 }}>
-                    <Text style={{ color: "#fff", fontSize: 24 }}>{t?.loginScreen?.welcome}</Text>
-                    <Text style={{ color: "#fff" }}>{t?.loginScreen?.loginFirst}</Text>
+                    <Text style={{ color: "#fff", fontSize: 24 }}>{t?.('loginScreen.welcome')}</Text>
+                    <Text style={{ color: "#fff" }}>{t?.('loginScreen.loginFirst')}</Text>
                 </View>
             </View>
             <View style={{
@@ -122,9 +122,9 @@ export const LoginScreen = (props) => {
                         }}
                     >
                         <AntDesignIcons name="wechat" size={24} color="green" />
-                        <StyledText style={{ marginLeft: 10 }}>{t?.loginScreen?.wechatLogin}</StyledText>
+                        <StyledText style={{ marginLeft: 10 }}>{t?.('loginScreen.wechatLogin')}</StyledText>
                     </TouchableOpacity>
-                    <Text style={[complexTheme?.invalid, { marginLeft: 10, textAlign: 'center', fontSize: 12 }]}>{t?.loginScreen?.userAgree}  [  {t?.loginScreen?.agreement}  ]</Text>
+                    <Text style={[complexTheme?.invalid, { marginLeft: 10, textAlign: 'center', fontSize: 12 }]}>{t?.('loginScreen.userAgree')}  [  {t?.('loginScreen.agreement')}  ]</Text>
                 </View>
             </View>
             <View style={{
@@ -138,7 +138,7 @@ export const LoginScreen = (props) => {
                 aspectRatio: 1
             }}>
                 <LinearGradient
-                    colors={['#fff', '#137775']}
+                    colors={['#fff', complexTheme?.mainThemeColor.color]}
                     locations={[0, 1]}
                     style={{ flex: 1, borderRadius: 1000000, margin: 2, justifyContent: 'center' }}
                 >
