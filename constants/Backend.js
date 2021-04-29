@@ -8,7 +8,7 @@ export const storage = {
 }
 
 
-export const baseUrl = 'http://localhost:3000'
+export const baseUrl = 'http://a4fdf0f9c645.ngrok.io'
 
 
 export const api = {
@@ -82,16 +82,17 @@ export const dispatchFetchRequestWithOption = async (
     if (!response.ok) {
 
       if (failCallback !== undefined) {
-        failCallback(response)
+        failCallback(response.clone())
       }
     } else {
 
-      !!successCallback && successCallback(response)
+      !!successCallback && successCallback(response.clone())
     }
 
     return response
   } catch (error) {
     console.error('Token Err', error)
+    failCallback?.(error)
   }
 }
 
