@@ -8,7 +8,7 @@ export const storage = {
 }
 
 
-export const baseUrl = 'http://a4fdf0f9c645.ngrok.io'
+export const baseUrl = 'http://192.168.1.107:4000'
 
 
 export const api = {

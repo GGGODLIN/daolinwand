@@ -52,9 +52,8 @@ const complexTheme = {
     lightBackground: {
       backgroundColor: '#f3f9f9'
     },
-    mainThemeColor: {
-      color: '#137775',
-    }
+    mainThemeColor: '#137775',
+    highlightThemeColor: '#feb89b'
   },
   dark: {
     overlay: {
@@ -70,9 +69,8 @@ const complexTheme = {
     lightBackground: {
       backgroundColor: '#f3f9f9'
     },
-    mainThemeColor: {
-      color: '#137775',
-    }
+    mainThemeColor: '#137775',
+    highlightThemeColor: '#feb89b'
   }
 }
 

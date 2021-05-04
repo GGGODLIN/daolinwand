@@ -1,4 +1,7 @@
 const zh = {
+  common: {
+    add: '新增',
+  },
   loginScreen: {
     welcome: 'Welcome Back',
     loginFirst: 'Please login first',
@@ -11,6 +14,9 @@ const zh = {
     roomStack: '房間',
     sceneStack: '智能',
     profileStack: '我的',
+  },
+  homeScreen: {
+
   }
 }
 

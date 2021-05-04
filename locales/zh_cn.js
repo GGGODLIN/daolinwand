@@ -1,4 +1,7 @@
 const zh_cn = {
+    common: {
+        add: '新增',
+    },
     loginScreen: {
         welcome: 'Welcome Back',
         loginFirst: 'Please login first',

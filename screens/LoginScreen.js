@@ -52,7 +52,7 @@ export const LoginScreen = (props) => {
 
     return (
         <>
-            <View style={{ flex: 1, backgroundColor: complexTheme?.mainThemeColor.color }}>
+            <View style={{ flex: 1, backgroundColor: complexTheme?.mainThemeColor }}>
                 <View style={{ marginTop: '60%', marginLeft: 10 }}>
                     <Text style={{ color: "#fff", fontSize: 24 }}>{t?.('loginScreen.welcome')}</Text>
                     <Text style={{ color: "#fff" }}>{t?.('loginScreen.loginFirst')}</Text>
@@ -138,7 +138,7 @@ export const LoginScreen = (props) => {
                 aspectRatio: 1
             }}>
                 <LinearGradient
-                    colors={['#fff', complexTheme?.mainThemeColor.color]}
+                    colors={['#fff', complexTheme?.mainThemeColor]}
                     locations={[0, 1]}
                     style={{ flex: 1, borderRadius: 1000000, margin: 2, justifyContent: 'center' }}
                 >
