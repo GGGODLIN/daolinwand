@@ -1,16 +1,19 @@
-import React, { useContext } from 'react'
-import { Text, Image, TouchableOpacity } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { Text, Image, TouchableOpacity, View } from 'react-native'
 import { LocalizationContext } from '../locales/LocaleContext';
 import { BackendContext } from '../backend/BackendContext';
 import iconMapping from '../mappings/iconMapping';
 import { Button } from 'react-native-paper';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { ActivityIndicator } from 'react-native-paper';
 
 
 //
 //<VectorIcon iconName={'caretDown'} size={16} color={complexTheme?.mainThemeColor} />
 
 export const VectorIcon = ({ iconName, style, size, onPress, color }, ...rest) => {
+
+    const [isLoading, setIsLoading] = useState(true);
 
     const {
         t,
@@ -39,22 +42,39 @@ export const VectorIcon = ({ iconName, style, size, onPress, color }, ...rest) =
         style: style,
         color: color
     }
-
+    console.log('icon loading1')
     if (!!iconSet?.[`${iconName}`]?.path) {
+        console.log('icon loading2')
         return (
             <TouchableOpacity
                 disabled={!onPress}
                 onPress={onPress}
             >
+                {isLoading &&
+                    <View style={[{ width: 28, height: 28, alignItems: 'center', justifyContent: 'center' }]}>
+                        <ActivityIndicator animating={true} color={complexTheme?.mainThemeColor} size={28} />
+                    </View>}
                 <Image
+                    onLoadEnd={() => {
+                        setTimeout(() => setIsLoading(false), 3000)
+                        //setIsLoading(false)
+                    }}
+                    onLoadStart={() => setIsLoading(true)}
                     source={{ uri: `${baseUrl}${iconPath}${iconSet?.[`${iconName}`]?.path}`, headers: { Authorization: token } }}
-                    style={[{ width: size ?? 28, height: size ?? 28, tintColor: color ?? complexTheme?.mainThemeColor }, style]}
+                    style={[{ width: size ?? 28, height: size ?? 28, tintColor: color ?? complexTheme?.mainThemeColor }, style, (isLoading ? { width: 0, height: 0 } : {})]}
                 />
+
             </TouchableOpacity>
+        )
+    } else if (!!iconMapping?.[`${iconName}`]) {
+        return (
+            React.createElement((iconMapping?.[`${iconName}`]?.lib ?? FontAwesome), elementProps)
         )
     } else {
         return (
-            React.createElement((iconMapping?.[`${iconName}`]?.lib ?? FontAwesome), elementProps)
+            <View style={[{ width: 28, height: 28, alignItems: 'center', justifyContent: 'center' }]}>
+                <ActivityIndicator animating={true} color={complexTheme?.mainThemeColor} size={28} />
+            </View>
         )
     }
 

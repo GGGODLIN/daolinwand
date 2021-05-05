@@ -40,23 +40,28 @@ export const BackendProvider = ({ children }) => {
     }, []);
 
     const getToken = async () => {
-        let response = await fetch(api(baseUrl)?.getToken, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password
+        try {
+            let response = await fetch(api(baseUrl)?.getToken, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    username: username,
+                    password: password
+                })
             })
-        })
-        if (!response.ok) {
-            console.warn('getTokenFailed', await response.text())
-        } else {
-            let res = await response.json()
-            console.log('getToken', res, response.headers.map.authorization)
-            setToken(response.headers.map.authorization)
+            if (!response.ok) {
+                console.warn('getTokenFailed', await response.text())
+            } else {
+                let res = await response.json()
+                console.log('getToken', res, response.headers.map.authorization)
+                setToken(response.headers.map.authorization)
+            }
+        } catch (error) {
+            console.error('getTokenError', error)
         }
+
     }
 
     const getIcons = async () => {
