@@ -12,15 +12,15 @@ import {
     StatusBar
 } from 'react-native';
 import { LocalizationContext } from '../locales/LocaleContext';
+import { BackendContext } from '../backend/BackendContext';
 import { StyledText } from '../components/StyledText';
 import { StyledContainer } from '../components/StyledContainer';
-import { api, dispatchFetchRequest } from "../constants/Backend";
+import { dispatchFetchRequest } from "../constants/Backend";
 import { useFocusEffect } from '@react-navigation/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { LoadingPage } from '../components/LoadingPage';
 import { Tooltip } from 'react-native-elements';
 //import Tooltip from 'react-native-walkthrough-tooltip';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { VectorIcon } from '../components/VectorIcon'
 
 export const HomeScreen = () => {
@@ -37,6 +37,13 @@ export const HomeScreen = () => {
         componentStyles,
         complexTheme
     } = useContext(LocalizationContext)
+
+    const {
+        token,
+        getToken,
+        api,
+        jsonServerBaseUrl,
+    } = useContext(BackendContext)
 
     const homePickerRef = useRef(null);
 
@@ -55,7 +62,7 @@ export const HomeScreen = () => {
 
     const getUserData = () => {
         dispatchFetchRequest(
-            api.homeScreen.getUserHomeData,
+            api(jsonServerBaseUrl)?.homeScreen.getUserHomeData,
             {
                 method: 'GET',
                 headers: {
@@ -122,6 +129,7 @@ export const HomeScreen = () => {
                                         <View style={{ flex: 1, justifyContent: 'space-between', width: '100%' }}>
                                             {userHomes?.map?.((home, index) =>
                                                 <TouchableOpacity
+                                                    key={`userHomes_${index}`}
                                                     style={[home === selectedHome ? [complexTheme?.lightBackground, (index === 0 ? { borderTopRightRadius: 10, borderTopLeftRadius: 10 } : {})] : {}, { flex: 1, justifyContent: 'center', paddingLeft: 14 }]}
                                                     onPress={() => {
                                                         setSelectedHome(home)
@@ -141,7 +149,7 @@ export const HomeScreen = () => {
                                 >
                                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                         <Text >{selectedHome?.homeName}</Text>
-                                        <VectorIcon iconName={'caretDown'} size={16} color={complexTheme?.mainThemeColor} />
+                                        <VectorIcon iconName={'caret-down'} size={16} color={complexTheme?.mainThemeColor} />
                                         <Text style={{ color: themeStyle?.backgroundColor }}>{selectedHome?.homeName}</Text>
                                     </View>
                                 </Tooltip>

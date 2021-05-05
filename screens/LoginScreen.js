@@ -9,11 +9,11 @@ import {
     DeviceEventEmitter
 } from 'react-native';
 import { LocalizationContext } from '../locales/LocaleContext';
+import { BackendContext } from '../backend/BackendContext';
 import { StyledText } from '../components/StyledText';
-import AntDesignIcons from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import * as WeChat from 'react-native-wechat-lib';
+import { VectorIcon } from '../components/VectorIcon'
 
 export const LoginScreen = (props) => {
     const {
@@ -27,6 +27,11 @@ export const LoginScreen = (props) => {
         componentStyles,
         complexTheme
     } = useContext(LocalizationContext)
+
+    const {
+        token,
+        getToken,
+    } = useContext(BackendContext)
 
 
     // useEffect(() => {
@@ -69,7 +74,8 @@ export const LoginScreen = (props) => {
                 paddingBottom: '20%'
             }}>
                 <View style={[complexTheme?.lightBackground, { alignSelf: 'center', padding: 10, borderRadius: 10 }]}>
-                    <MaterialCommunityIcons name="home-city" size={40} color="green" />
+                    {/* <VectorIcon iconName={'home-city'} size={40} color="green" /> */}
+                    <VectorIcon iconName={'Building'} size={40} color="green" />
                 </View>
                 <View>
                     <TouchableOpacity
@@ -121,7 +127,7 @@ export const LoginScreen = (props) => {
 
                         }}
                     >
-                        <AntDesignIcons name="wechat" size={24} color="green" />
+                        <VectorIcon iconName={'wechat'} size={24} color="green" />
                         <StyledText style={{ marginLeft: 10 }}>{t?.('loginScreen.wechatLogin')}</StyledText>
                     </TouchableOpacity>
                     <Text style={[complexTheme?.invalid, { marginLeft: 10, textAlign: 'center', fontSize: 12 }]}>{t?.('loginScreen.userAgree')}  [  {t?.('loginScreen.agreement')}  ]</Text>

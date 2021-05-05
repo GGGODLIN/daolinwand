@@ -7,10 +7,7 @@ import {
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { LocalizationContext } from '../locales/LocaleContext';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { VectorIcon } from '../components/VectorIcon'
 import HomeStackNavigator from './HomeStackNavigator'
 import RoomStackNavigator from './RoomStackNavigator'
 import SceneStackNavigator from './SceneStackNavigator'
@@ -34,7 +31,7 @@ function AppNavigator(props) {
           component={HomeStackNavigator}
           options={({ navigation, route }) => ({
             tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.homeStack')}</Text>,
-            tabBarIcon: ({ focused, color, size }) => <MaterialIcons name="home-filled" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
+            tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName={'home-filled'} size={size} color={focused ? complexTheme?.mainThemeColor : color} />
 
           })}
         />
@@ -43,7 +40,7 @@ function AppNavigator(props) {
           component={RoomStackNavigator}
           options={({ navigation, route }) => ({
             tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.roomStack')}</Text>,
-            tabBarIcon: ({ focused, color, size }) => <MaterialIcons name="sensor-door" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
+            tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName="sensor-door" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
 
           })}
         />
@@ -52,7 +49,7 @@ function AppNavigator(props) {
           component={SceneStackNavigator}
           options={({ navigation, route }) => ({
             tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.sceneStack')}</Text>,
-            tabBarIcon: ({ focused, color, size }) => <AntDesign name="appstore1" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
+            tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName="appstore1" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
 
           })}
         />
@@ -61,7 +58,7 @@ function AppNavigator(props) {
           component={ProfileStackNavigator}
           options={({ navigation, route }) => ({
             tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.profileStack')}</Text>,
-            tabBarIcon: ({ focused, color, size }) => <FontAwesome name="user" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
+            tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName="user" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
 
           })}
         />

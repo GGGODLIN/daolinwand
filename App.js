@@ -28,6 +28,7 @@ import {
 
 import { LoginScreen } from './screens/LoginScreen'
 import { LocalizationProvider } from './locales/LocaleContext';
+import { BackendProvider } from './backend/BackendContext';
 import AppNavigator from './navigation/AppNavigator'
 
 
@@ -45,9 +46,11 @@ export default function App() {
   return (
     <SafeAreaView style={backgroundStyle}>
       <StatusBar backgroundColor={'#000'} />
-      <LocalizationProvider>
-        {isLogin ? <AppNavigator /> : <LoginScreen setIsLogin={setIsLogin} />}
-      </LocalizationProvider>
+      <BackendProvider>
+        <LocalizationProvider>
+          {isLogin ? <AppNavigator /> : <LoginScreen setIsLogin={setIsLogin} />}
+        </LocalizationProvider>
+      </BackendProvider>
     </SafeAreaView>
   );
 };
