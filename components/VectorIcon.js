@@ -42,22 +42,20 @@ export const VectorIcon = ({ iconName, style, size, onPress, color }, ...rest) =
         style: style,
         color: color
     }
-    console.log('icon loading1')
     if (!!iconSet?.[`${iconName}`]?.path) {
-        console.log('icon loading2')
         return (
             <TouchableOpacity
                 disabled={!onPress}
                 onPress={onPress}
             >
                 {isLoading &&
-                    <View style={[{ width: 28, height: 28, alignItems: 'center', justifyContent: 'center' }]}>
-                        <ActivityIndicator animating={true} color={complexTheme?.mainThemeColor} size={28} />
+                    <View style={[{ width: size ?? 28, height: size ?? 28, alignItems: 'center', justifyContent: 'center' }]}>
+                        <ActivityIndicator animating={true} color={complexTheme?.mainThemeColor} size={size ?? 28} />
                     </View>}
                 <Image
                     onLoadEnd={() => {
-                        setTimeout(() => setIsLoading(false), 3000)
-                        //setIsLoading(false)
+                        //setTimeout(() => setIsLoading(false), 3000)
+                        setIsLoading(false)
                     }}
                     onLoadStart={() => setIsLoading(true)}
                     source={{ uri: `${baseUrl}${iconPath}${iconSet?.[`${iconName}`]?.path}`, headers: { Authorization: token } }}
@@ -72,8 +70,8 @@ export const VectorIcon = ({ iconName, style, size, onPress, color }, ...rest) =
         )
     } else {
         return (
-            <View style={[{ width: 28, height: 28, alignItems: 'center', justifyContent: 'center' }]}>
-                <ActivityIndicator animating={true} color={complexTheme?.mainThemeColor} size={28} />
+            <View style={[{ width: size ?? 28, height: size ?? 28, alignItems: 'center', justifyContent: 'center' }]}>
+                <ActivityIndicator animating={true} color={complexTheme?.mainThemeColor} size={size ?? 28} />
             </View>
         )
     }
