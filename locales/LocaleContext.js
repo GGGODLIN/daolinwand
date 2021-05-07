@@ -84,7 +84,7 @@ const componentStylesHelper = (themeStyle, complexTheme) => ({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
 
-    elevation: 5,
+    elevation: 3,
     borderRadius: 5
   }
 })

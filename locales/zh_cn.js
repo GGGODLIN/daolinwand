@@ -14,6 +14,10 @@ const zh_cn = {
         roomStack: '房间',
         sceneStack: '智能',
         profileStack: '我的',
+    },
+    homeScreen: {
+        scene: '場景模式',
+        favoriteDevice: '常用設備',
     }
 }
 

@@ -16,7 +16,8 @@ const zh = {
     profileStack: '我的',
   },
   homeScreen: {
-
+    scene: '場景模式',
+    favoriteDevice: '常用設備',
   }
 }
 
