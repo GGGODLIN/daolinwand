@@ -13,6 +13,7 @@ const iconMapping = {
     "appstore1": { lib: AntDesignIcons, name: 'appstore1' },
     "home-filled": { lib: MaterialIcons, name: 'home-filled' },
     "sensor-door": { lib: MaterialIcons, name: 'sensor-door' },
+    "power-off": { lib: FontAwesome, name: 'power-off' },
 }
 
 

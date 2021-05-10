@@ -9,7 +9,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { LoadingPage } from '../components/LoadingPage';
 import { VectorIcon } from '../components/VectorIcon'
 
-export const TodoPage = ({ navigation, route }) => {
+export const AddHomeFormScreen = ({ navigation, route }) => {
     const {
         t,
         appLanguage,
@@ -34,7 +34,7 @@ export const TodoPage = ({ navigation, route }) => {
     return (
         <>
             <StyledContainer>
-                <Text>Todo</Text>
+                <Text>AddHomeFormScreen</Text>
             </StyledContainer>
         </>
     );

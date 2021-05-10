@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { HomeScreen } from '../screens/HomeScreen'
+import { AddHomeFormScreen } from '../screens/AddHomeFormScreen'
 
 const Stack = createStackNavigator();
 
@@ -17,6 +18,14 @@ function HomeStackNavigator(props) {
                 component={HomeScreen}
                 options={({ navigation, route }) => ({
                     headerShown: false
+
+                })}
+            />
+            <Stack.Screen
+                name="AddHomeFormScreen"
+                component={AddHomeFormScreen}
+                options={({ navigation, route }) => ({
+                    headerShown: true
 
                 })}
             />

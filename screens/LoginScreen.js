@@ -33,7 +33,6 @@ export const LoginScreen = (props) => {
         getToken,
     } = useContext(BackendContext)
 
-
     // useEffect(() => {
     //     initializeAppLanguage()
     //     DeviceEventEmitter.addListener('WeChat_Resp', resp => {

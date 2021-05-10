@@ -11,7 +11,7 @@ import { Tooltip } from 'react-native-elements';
 import { VectorIcon } from '../components/VectorIcon'
 import { DropDownPicker } from '../components/DropDownPicker';
 
-export const HomeScreen = () => {
+export const HomeScreen = ({ navigation }) => {
 
     const {
         t,
@@ -40,6 +40,7 @@ export const HomeScreen = () => {
     const [selectedHomeIndex, setSelectedHomeIndex] = useState(0);
     const [userHomes, setUserHomes] = useState(null);
     const [userScenes, setUserScenes] = useState(null);
+    const [userDevices, setUserDevices] = useState(null);
 
 
     useFocusEffect(
@@ -76,9 +77,9 @@ export const HomeScreen = () => {
                 response.json().then(data => {
                     unstable_batchedUpdates(() => {
                         setUserData(data)
-                        setSelectedHomeIndex(0)
                         setUserHomes(data?.userHomes)
                         setUserScenes(data?.userScenes)
+                        setUserDevices(data?.favoriteDevice)
                     })
                 })
             },
@@ -88,6 +89,7 @@ export const HomeScreen = () => {
         )
         return await res.json()
     }
+    console.log('Homescreen render')
 
     if (isLoading) {
         return (<LoadingPage />)
@@ -97,42 +99,107 @@ export const HomeScreen = () => {
     }
     else {
         return (
-            <>
-                <StyledContainer >
+
+            <StyledContainer >
+                <ScrollView >
                     <View style={{ padding: 10, flex: 1 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{userData?.userName}</Text>
 
                             <View style={{ marginLeft: 10 }}>
-                                <DropDownPicker pickerOptions={userHomes} selectedIndex={selectedHomeIndex} setSelectedIndex={setSelectedHomeIndex} />
+                                <DropDownPicker pickerOptions={userHomes} selectedIndex={selectedHomeIndex} setSelectedIndex={(index) => {
+                                    if (index === userHomes?.length) {
+                                        navigation.navigate('AddHomeFormScreen')
+                                    } else
+                                        setSelectedHomeIndex(index)
+                                }} />
                             </View>
                         </View>
+                        {/* dashboard */}
                         <View style={{ height: 150, width: '100%', backgroundColor: '#fff', marginVertical: 14, borderRadius: 14 }}>
 
                         </View>
-                        <View style={{ width: '100%' }}>
+                        {/* 場景模式 */}
+                        <UserScenesComponent userScenes={userScenes} />
+                        {/* 常用設備 */}
+                        <View style={{ marginTop: 10, width: '100%' }}>
                             <View style={{ borderLeftWidth: 5, borderColor: complexTheme?.mainThemeColor, marginVertical: 10 }}>
-                                <Text style={{ marginLeft: 5, fontWeight: 'bold' }}>{t('homeScreen.scene')}</Text>
+                                <Text style={[{ marginLeft: 5 }, componentStyles?.sectionTitle]}>{t('homeScreen.favoriteDevice')}</Text>
                             </View>
-                            <ScrollView
-                                style={[componentStyles?.shadowBox, { width: '100%', height: 120, backgroundColor: '#fff', borderRadius: 10, paddingVertical: 10 }]}
-                                horizontal
-                                pagingEnabled
-                                contentContainerStyle={{ minWidth: `${Math.ceil(userScenes.length / 5)}00%`, backgroundColor: 'green' }}
-                            >
-                                {userScenes?.map?.((scene) => (
-                                    <View style={{ height: '100%', backgroundColor: 'pink', minWidth: `${20 / Math.ceil(userScenes.length / 5)}%`, alignItems: 'center' }}>
-                                        <Text>123123213123123213131</Text>
-                                        <Text>123</Text>
-                                    </View>
+                            <View style={{ width: '100%', flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                {userDevices?.map?.((device, index) => (
+                                    <TouchableOpacity style={[componentStyles?.shadowBox, { padding: 8, backgroundColor: '#fff', width: '30%', aspectRatio: 1, marginVertical: '2.5%', marginHorizontal: (index % 3) === 1 ? '5%' : 0 }]}>
+                                        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                            <View style={{ flexDirection: 'column' }}>
+                                                <Text style={{ fontWeight: 'bold' }}>{device?.name}</Text>
+                                                <Text style={[{ fontSize: 12, color: complexTheme?.placeholderTextColor }]}>{device?.placeName}</Text>
+                                            </View>
+                                            <VectorIcon iconName={"power-off"} size={16} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
+                                        </View>
+                                        <View style={{ alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
+                                            <VectorIcon iconName={device?.icon} size={32} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
+                                            <Text style={[{ fontSize: 12, color: complexTheme?.placeholderTextColor }]}>{device?.state?.displayStatus}</Text>
+                                        </View>
+                                    </TouchableOpacity>
                                 ))}
-                            </ScrollView>
+
+
+                            </View>
                         </View>
 
-                    </View>
 
-                </StyledContainer>
-            </>
+                    </View>
+                </ScrollView>
+            </StyledContainer>
+
         );
     }
+}
+
+const UserScenesComponent = ({ userScenes }) => {
+    const {
+        t,
+        appLanguage,
+        setAppLanguage,
+        initializeAppLanguage,
+        themeStyle,
+        appTheme,
+        setAppTheme,
+        componentStyles,
+        complexTheme
+    } = useContext(LocalizationContext)
+
+    const {
+        token,
+        getToken,
+        api,
+        jsonServerBaseUrl,
+    } = useContext(BackendContext)
+    return (
+        <View style={{ width: '100%' }}>
+            <View style={{ borderLeftWidth: 5, borderColor: complexTheme?.mainThemeColor, marginVertical: 10 }}>
+                <Text style={[{ marginLeft: 5 }, componentStyles?.sectionTitle]}>{t('homeScreen.scene')}</Text>
+            </View>
+            <ScrollView
+                style={[componentStyles?.shadowBox, { width: '100%', height: 120, backgroundColor: '#fff', borderRadius: 10, paddingVertical: 10 }]}
+                horizontal
+                pagingEnabled
+                contentContainerStyle={{ width: `${Math.ceil(userScenes.length / 5)}00%`, }}
+            >
+                {userScenes?.map?.((scene) => (
+                    <TouchableOpacity style={{ height: '100%', width: `${20 / Math.ceil(userScenes.length / 5)}%`, alignItems: 'center', justifyContent: 'center' }}>
+                        <View style={[{ width: '70%', height: '90%', alignItems: 'center' }, (scene?.active && { ...componentStyles?.shadowBox, borderRadius: 100, backgroundColor: '#fff' })]}>
+                            <View style={[{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff', width: '100%', aspectRatio: 1, borderRadius: 100 }, (scene?.active ? { borderRadius: 100, ...complexTheme?.lightBackground } : { ...componentStyles?.shadowBox, borderRadius: 100, backgroundColor: '#fff' })]}>
+                                <VectorIcon iconName={scene?.icon ?? 'Building'} size={40} color="green" />
+                            </View>
+                            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                <Text style={[{ fontSize: 12, color: scene?.active ? complexTheme?.mainThemeColor : complexTheme?.invalid?.color }]}>{scene?.name}</Text>
+                            </View>
+
+                        </View>
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+        </View>
+    )
 }

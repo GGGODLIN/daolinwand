@@ -44,8 +44,8 @@ export const DropDownPicker = ({ pickerOptions, selectedIndex, setSelectedIndex 
                             key={`pickerOptions_${index}`}
                             style={[index === selectedIndex ? [complexTheme?.lightBackground, (index === 0 ? { borderTopRightRadius: 10, borderTopLeftRadius: 10 } : {})] : {}, { flex: 1, justifyContent: 'center', paddingLeft: 14 }]}
                             onPress={() => {
-                                setSelectedIndex(index)
                                 pickerRef?.current?.toggleTooltip?.()
+                                setSelectedIndex(index)
                             }}
                         >
                             <Text style={{ color: index === selectedIndex ? complexTheme?.highlightThemeColor : '#000' }}>{home?.homeName}</Text>
@@ -53,6 +53,10 @@ export const DropDownPicker = ({ pickerOptions, selectedIndex, setSelectedIndex 
                     )}
                     <TouchableOpacity
                         style={{ flex: 1, justifyContent: 'center', paddingLeft: 14 }}
+                        onPress={() => {
+                            pickerRef?.current?.toggleTooltip?.()
+                            setSelectedIndex(pickerOptions?.length)
+                        }}
                     >
                         <Text>{t('common.add')}</Text>
                     </TouchableOpacity>

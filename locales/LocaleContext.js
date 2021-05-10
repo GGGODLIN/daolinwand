@@ -53,7 +53,8 @@ const complexTheme = {
       backgroundColor: '#f3f9f9'
     },
     mainThemeColor: '#137775',
-    highlightThemeColor: '#feb89b'
+    highlightThemeColor: '#feb89b',
+    placeholderTextColor: 'gray'
   },
   dark: {
     overlay: {
@@ -70,7 +71,8 @@ const complexTheme = {
       backgroundColor: '#f3f9f9'
     },
     mainThemeColor: '#137775',
-    highlightThemeColor: '#feb89b'
+    highlightThemeColor: '#feb89b',
+    placeholderTextColor: 'gray'
   }
 }
 
@@ -86,6 +88,10 @@ const componentStylesHelper = (themeStyle, complexTheme) => ({
 
     elevation: 3,
     borderRadius: 5
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold'
   }
 })
 

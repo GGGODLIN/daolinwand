@@ -71,7 +71,8 @@ export const VectorIcon = ({ iconName, style, size, onPress, color }, ...rest) =
     } else {
         return (
             <View style={[{ width: size ?? 28, height: size ?? 28, alignItems: 'center', justifyContent: 'center' }]}>
-                <ActivityIndicator animating={true} color={complexTheme?.mainThemeColor} size={size ?? 28} />
+                {/* 有夠吃效能的這拉基 */}
+                {/* <ActivityIndicator animating={false} color={complexTheme?.mainThemeColor} size={size ?? 28} /> */}
             </View>
         )
     }
