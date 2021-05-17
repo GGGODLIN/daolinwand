@@ -1,6 +1,9 @@
 const zh_cn = {
     common: {
         add: '新增',
+        done: '完成',
+        name: '名称',
+        require: '必填'
     },
     loginScreen: {
         welcome: 'Welcome Back',
@@ -16,8 +19,13 @@ const zh_cn = {
         profileStack: '我的',
     },
     homeScreen: {
-        scene: '場景模式',
-        favoriteDevice: '常用設備',
+        scene: '场景模式',
+        favoriteDevice: '常用设备',
+    },
+    addHomeForm: {
+        title: '添加家庭',
+        gwModel: '网关型号',
+        homePic: '家庭照片'
     }
 }
 

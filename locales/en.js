@@ -1,4 +1,9 @@
 const en = {
+  common: {
+    add: '新增',
+    done: '完成',
+    name: '名稱'
+  },
   loginScreen: {
     welcome: 'Welcome Back',
     loginFirst: 'Please login first',
@@ -11,6 +16,15 @@ const en = {
     roomStack: '房間',
     sceneStack: '智能',
     profileStack: '我的',
+  },
+  homeScreen: {
+    scene: '場景模式',
+    favoriteDevice: '常用設備',
+  },
+  addHomeForm: {
+    title: '添加家庭',
+    gwModel: '網關型號',
+    homePic: '家庭照片'
   }
 }
 

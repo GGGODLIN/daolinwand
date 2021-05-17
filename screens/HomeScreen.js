@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useCallback, useState, useRef } from 'react';
-import { StyleSheet, Text, useColorScheme, View, TouchableOpacity, Alert, ScrollView, unstable_batchedUpdates, Platform, StatusBar } from 'react-native';
+import { Dimensions, StyleSheet, Text, useColorScheme, View, TouchableOpacity, Alert, ScrollView, unstable_batchedUpdates, Platform, StatusBar } from 'react-native';
 import { LocalizationContext } from '../locales/LocaleContext';
 import { BackendContext } from '../backend/BackendContext';
 import { StyledText } from '../components/StyledText';
@@ -137,7 +137,7 @@ export const HomeScreen = ({ navigation }) => {
                                             <VectorIcon iconName={"power-off"} size={16} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
                                         </View>
                                         <View style={{ alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
-                                            <VectorIcon iconName={device?.icon} size={32} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
+                                            <VectorIcon iconName={device?.icon} size={((Dimensions.get("window").width - 20) * 0.3 - 54) / 2} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
                                             <Text style={[{ fontSize: 12, color: complexTheme?.placeholderTextColor }]}>{device?.state?.displayStatus}</Text>
                                         </View>
                                     </TouchableOpacity>

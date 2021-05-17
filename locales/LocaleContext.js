@@ -54,7 +54,8 @@ const complexTheme = {
     },
     mainThemeColor: '#137775',
     highlightThemeColor: '#feb89b',
-    placeholderTextColor: 'gray'
+    placeholderTextColor: 'gray',
+    alertColor: 'red'
   },
   dark: {
     overlay: {
@@ -72,7 +73,8 @@ const complexTheme = {
     },
     mainThemeColor: '#137775',
     highlightThemeColor: '#feb89b',
-    placeholderTextColor: 'gray'
+    placeholderTextColor: 'gray',
+    alertColor: 'red'
   }
 }
 
@@ -92,6 +94,25 @@ const componentStylesHelper = (themeStyle, complexTheme) => ({
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold'
+  },
+  inputBox: {
+    flexDirection: 'row',
+    borderRadius: 10,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    marginVertical: 10
+  },
+  rootInput: {
+    flex: 1,
+    textAlign: 'right',
+    fontWeight: 'bold'
+  },
+  inputErrorText: {
+    marginTop: -10,
+    textAlign: 'right',
+    color: complexTheme?.alertColor,
+    fontSize: 12
   }
 })
 

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { OverflowMenuProvider } from 'react-navigation-header-buttons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { LocalizationContext } from '../locales/LocaleContext';
 import { VectorIcon } from '../components/VectorIcon'
@@ -23,46 +24,48 @@ function AppNavigator(props) {
   } = useContext(LocalizationContext)
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        initialRouteName="HomeScreen"
-      >
-        <Tab.Screen
-          name="HomeStackNavigator"
-          component={HomeStackNavigator}
-          options={({ navigation, route }) => ({
-            tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.homeStack')}</Text>,
-            tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName={'home-filled'} size={size} color={focused ? complexTheme?.mainThemeColor : color} />
+      <OverflowMenuProvider>
+        <Tab.Navigator
+          initialRouteName="HomeScreen"
+        >
+          <Tab.Screen
+            name="HomeStackNavigator"
+            component={HomeStackNavigator}
+            options={({ navigation, route }) => ({
+              tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.homeStack')}</Text>,
+              tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName={'home-filled'} size={size} color={focused ? complexTheme?.mainThemeColor : color} />
 
-          })}
-        />
-        <Tab.Screen
-          name="RoomStackNavigator"
-          component={RoomStackNavigator}
-          options={({ navigation, route }) => ({
-            tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.roomStack')}</Text>,
-            tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName="sensor-door" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
+            })}
+          />
+          <Tab.Screen
+            name="RoomStackNavigator"
+            component={RoomStackNavigator}
+            options={({ navigation, route }) => ({
+              tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.roomStack')}</Text>,
+              tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName="sensor-door" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
 
-          })}
-        />
-        <Tab.Screen
-          name="SceneStackNavigator"
-          component={SceneStackNavigator}
-          options={({ navigation, route }) => ({
-            tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.sceneStack')}</Text>,
-            tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName="appstore1" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
+            })}
+          />
+          <Tab.Screen
+            name="SceneStackNavigator"
+            component={SceneStackNavigator}
+            options={({ navigation, route }) => ({
+              tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.sceneStack')}</Text>,
+              tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName="appstore1" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
 
-          })}
-        />
-        <Tab.Screen
-          name="ProfileStackNavigator"
-          component={ProfileStackNavigator}
-          options={({ navigation, route }) => ({
-            tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.profileStack')}</Text>,
-            tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName="user" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
+            })}
+          />
+          <Tab.Screen
+            name="ProfileStackNavigator"
+            component={ProfileStackNavigator}
+            options={({ navigation, route }) => ({
+              tabBarLabel: ({ focused, color, size }) => <Text style={{ color: focused ? themeStyle?.color : color, fontSize: size ?? 12 }}>{t?.('tabBarLabel.profileStack')}</Text>,
+              tabBarIcon: ({ focused, color, size }) => <VectorIcon iconName="user" size={size} color={focused ? complexTheme?.mainThemeColor : color} />
 
-          })}
-        />
-      </Tab.Navigator>
+            })}
+          />
+        </Tab.Navigator>
+      </OverflowMenuProvider>
     </NavigationContainer>
   );
 }

@@ -1,6 +1,9 @@
 const zh = {
   common: {
     add: '新增',
+    done: '完成',
+    name: '名稱',
+    require: '必填'
   },
   loginScreen: {
     welcome: 'Welcome Back',
@@ -18,6 +21,11 @@ const zh = {
   homeScreen: {
     scene: '場景模式',
     favoriteDevice: '常用設備',
+  },
+  addHomeForm: {
+    title: '添加家庭',
+    gwModel: '網關型號',
+    homePic: '家庭照片'
   }
 }
 
