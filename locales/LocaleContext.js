@@ -101,7 +101,8 @@ const componentStylesHelper = (themeStyle, complexTheme) => ({
     backgroundColor: '#fff',
     alignItems: 'center',
     paddingHorizontal: 10,
-    marginVertical: 10
+    marginVertical: 10,
+    minHeight: 50
   },
   rootInput: {
     flex: 1,

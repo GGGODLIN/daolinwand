@@ -11,6 +11,7 @@ const iconMapping = {
     "home-city": { lib: MaterialCommunityIcons, name: 'home-city' },
     "wechat": { lib: AntDesignIcons, name: 'wechat' },
     "appstore1": { lib: AntDesignIcons, name: 'appstore1' },
+    "right": { lib: AntDesignIcons, name: 'right' },
     "home-filled": { lib: MaterialIcons, name: 'home-filled' },
     "sensor-door": { lib: MaterialIcons, name: 'sensor-door' },
     "power-off": { lib: FontAwesome, name: 'power-off' },
