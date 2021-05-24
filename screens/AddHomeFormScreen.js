@@ -17,7 +17,10 @@ import {
     OverflowMenu,
 } from 'react-navigation-header-buttons';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-
+import AmazingCropper, { DefaultFooter } from 'react-native-amazing-cropper';
+import Modal from 'react-native-modal';
+import RNFS from 'react-native-fs';
+import Exif from 'react-native-exif'
 
 export const AddHomeFormScreen = ({ navigation, route }) => {
     const {
@@ -40,9 +43,9 @@ export const AddHomeFormScreen = ({ navigation, route }) => {
     } = useContext(BackendContext)
 
     const { control, handleSubmit, formState: { errors } } = useForm();
-    const onSubmit = data => console.log('onSubmit', data);
+    const onSubmit = data => setModalVisible(true);
 
-    const [homePic, setHomePic] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -55,7 +58,14 @@ export const AddHomeFormScreen = ({ navigation, route }) => {
     }, [navigation]);
 
     const openPhonePicture = (onChange) => {
-        launchImageLibrary({ includeBase64: true }, (e) => { e?.base64 && onChange(e) })
+        launchImageLibrary({ includeBase64: true, quality: 0.1 }, (e) => {
+            if (!!e?.base64) {
+                onChange(e)
+                Image.getSize(e?.uri, (width, height) => {
+                    console.log('getSize Lib', width, height)
+                })
+            }
+        })
     }
 
 
@@ -104,27 +114,68 @@ export const AddHomeFormScreen = ({ navigation, route }) => {
                     <Controller
                         control={control}
                         render={({ field: { onChange, onBlur, value } }) => (
-                            <TouchableOpacity
+                            <View
                                 style={[componentStyles?.inputBox, componentStyles?.shadowBox, { flexDirection: 'column', flex: !!value ? 1 : 0 }]}
-                                onPress={() => { openPhonePicture(onChange) }}
+
                             >
-                                <View style={{ flexDirection: 'row', minHeight: 50, alignItems: 'center' }}>
+                                <TouchableOpacity
+                                    onPress={() => { openPhonePicture(onChange) }}
+                                    style={{ flexDirection: 'row', minHeight: 50, alignItems: 'center' }}>
                                     <Text>{t('addHomeForm.homePic')}</Text>
 
                                     <View style={{ flex: 1, alignItems: 'flex-end' }}>
                                         <VectorIcon iconName={'right'} size={20} color={complexTheme?.mainThemeColor} />
                                     </View>
-                                </View>
-                                {!!value && <View style={{ width: '100%', flex: 1 }}>
+                                </TouchableOpacity>
+                                {!!value && <TouchableOpacity style={{ width: '100%', flex: 1 }}
+                                    onPress={() => {
+                                        Image.getSize(value?.uri, (width, height) => {
+                                            console.log('getSize', width, height)
+                                            //onChange({ ...value, height: height, width: width })
+                                            setModalVisible(true)
+                                        })
+
+                                    }}
+                                >
                                     <Image
                                         style={{ width: '100%', flex: 1 }}
                                         source={{
-                                            uri: `data:${value?.type};base64,${value?.base64}`,
+                                            uri: value?.uri,
                                         }}
                                         resizeMode='center'
                                     />
-                                </View>}
-                            </TouchableOpacity>
+                                </TouchableOpacity>}
+                                <Modal
+                                    isVisible={modalVisible}
+                                    backdropOpacity={0.7}
+                                    onBackdropPress={() => setModalVisible(false)}
+                                    useNativeDriver
+                                    hideModalContentWhileAnimating
+                                    style={{ margin: 0 }}
+                                >
+                                    <AmazingCropper
+                                        // Pass custom text to the default footer
+                                        footerComponent={<DefaultFooter doneText='完成' rotateText='旋轉' cancelText='取消' />}
+                                        onDone={(croppedImageUri) => {
+
+                                            RNFS.readFile(croppedImageUri, 'base64')
+                                                .then(base64String => {
+                                                    Image.getSize(croppedImageUri, (width, height) => {
+                                                        console.log('getSize', width, height)
+                                                        onChange({ uri: croppedImageUri, height: height, width: width, base64: base64String })
+                                                        setModalVisible(false);
+                                                    })
+                                                });
+                                        }}
+                                        onError={() => { }}
+                                        onCancel={() => { setModalVisible(false) }}
+                                        imageUri={value?.uri}
+                                        imageWidth={value?.width}
+                                        imageHeight={value?.height}
+                                        BORDER_WIDTH={10}
+                                    />
+                                </Modal>
+                            </View>
                         )}
                         name="homePic"
                         defaultValue={null}
