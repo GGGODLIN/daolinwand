@@ -1,20 +1,22 @@
 import * as React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { TodoPage } from '../screens/TodoPage'
+import { RoomScreen } from '../screens/RoomScreen'
+import RoomTabNavigator from './RoomTabNavigator'
 
 const Stack = createStackNavigator();
 
 function RoomStackNavigator(props) {
     return (
         <Stack.Navigator
-            initialRouteName="TodoPage"
+            initialRouteName="RoomTabNavigator"
             screenOptions={({ navigation, route }) => ({
                 headerTitleStyle: { color: 'black' }
             })}
         >
             <Stack.Screen
-                name="TodoPage"
-                component={TodoPage}
+                name="RoomTabNavigator"
+                component={RoomTabNavigator}
                 options={({ navigation, route }) => ({
                     headerShown: false
 

@@ -89,7 +89,6 @@ export const HomeScreen = ({ navigation }) => {
         )
         return await res.json()
     }
-    console.log('Homescreen render')
 
     if (isLoading) {
         return (<LoadingPage />)
