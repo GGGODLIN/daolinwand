@@ -32,13 +32,14 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 
     const roomTabRef = useRef(null);
     return (
-        <View style={{ flexDirection: 'row', backgroundColor: '#fff' }}>
+        <View style={[componentStyles?.shadowBox, { flexDirection: 'row', backgroundColor: '#fff', borderRadius: 0 }]}>
             <FlatList
                 horizontal
                 ref={roomTabRef}
                 //style={{ width: '100%' }}
                 //contentContainerStyle={{ width: `${Math.ceil(state.routes.length / 4)}00%`, backgroundColor: 'pink' }}
                 data={state.routes}
+                showsHorizontalScrollIndicator={false}
                 renderItem={({ item: route, index }) => {
 
                     const { options } = descriptors[route.key];
@@ -83,7 +84,7 @@ function MyTabBar({ state, descriptors, navigation, position }) {
                             // accessibilityLabel={options.tabBarAccessibilityLabel}
                             onPress={onPress}
                             onLongPress={onLongPress}
-                            style={[{ minWidth: 100, borderBottomWidth: isFocused ? 2 : 0, paddingBottom: isFocused ? 0 : 2, height: 50, justifyContent: 'center', alignItems: 'center' }]}
+                            style={[{ minWidth: 100, borderColor: complexTheme?.highlightThemeColor, borderBottomWidth: isFocused ? 2 : 0, paddingBottom: isFocused ? 0 : 2, height: 50, justifyContent: 'center', alignItems: 'center' }]}
                         >
                             <Animated.Text style={[{ opacity, color: isFocused ? complexTheme?.mainThemeColor : complexTheme?.invalid?.color }]}>
                                 {label}
@@ -92,60 +93,10 @@ function MyTabBar({ state, descriptors, navigation, position }) {
                     );
                 }}
             >
-                {/* {state.routes.map((route, index) => {
-                    const { options } = descriptors[route.key];
-                    const label =
-                        options.tabBarLabel !== undefined
-                            ? options.tabBarLabel
-                            : options.title !== undefined
-                                ? options.title
-                                : route.name;
 
-                    const isFocused = state.index === index;
-
-                    const onPress = () => {
-                        const event = navigation.emit({
-                            type: 'tabPress',
-                            target: route.key,
-                            canPreventDefault: true,
-                        });
-
-                        if (!isFocused && !event.defaultPrevented) {
-                            navigation.navigate(route.name);
-                        }
-                    };
-
-                    const onLongPress = () => {
-                        navigation.emit({
-                            type: 'tabLongPress',
-                            target: route.key,
-                        });
-                    };
-
-                    const inputRange = state.routes.map((_, i) => i);
-                    const opacity = Animated.interpolateNode(position, {
-                        inputRange,
-                        outputRange: inputRange.map(i => (i === index ? 1 : 1)),
-                    });
-
-                    return (
-                        <TouchableOpacity
-                            accessibilityRole="button"
-                            accessibilityState={isFocused ? { selected: true } : {}}
-                            accessibilityLabel={options.tabBarAccessibilityLabel}
-                            onPress={onPress}
-                            onLongPress={onLongPress}
-                            style={[state?.routes?.length <= 4 ? { flex: 1 } : { width: `${25 / Math.ceil(state?.routes?.length / 4)}%` }, { backgroundColor: '#fff', height: 50, justifyContent: 'center', alignItems: 'center' }]}
-                        >
-                            <Animated.Text style={[{ opacity, color: isFocused ? complexTheme?.mainThemeColor : complexTheme?.invalid?.color }]}>
-                                {label}
-                            </Animated.Text>
-                        </TouchableOpacity>
-                    );
-                })} */}
 
             </FlatList >
-            <View style={{ width: 50 }}>
+            <View style={{ width: 50, borderLeftWidth: 1 }}>
 
             </View>
         </View >
@@ -233,6 +184,7 @@ function RoomTabNavigator(props) {
                 options={({ navigation, route }) => ({
                     title: room?.name
                 })}
+                initialParams={{ ...room }}
             />)}
         </Tab.Navigator>
     );
