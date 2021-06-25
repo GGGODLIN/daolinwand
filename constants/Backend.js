@@ -50,32 +50,7 @@ export const dispatchFetchRequestWithOption = async (
   failCallback
 ) => {
   try {
-    //with token
-    // let token = await AsyncStorage.getItem(storage.clientAccessToken)
 
-
-    // if (token != null) {
-    //   const tokenObj = JSON.parse(token)
-    //   payload.headers.Authorization = payload?.headers?.Authorization ?? `Bearer ${tokenObj.access_token}`
-
-    //   const response = await fetch(endpoint, payload)
-
-    //   if (!response.ok) {
-
-    //     if (failCallback !== undefined) {
-    //       failCallback(response)
-    //     }
-    //   } else {
-
-    //     !!successCallback && successCallback(response)
-    //   }
-
-    //   return response
-    // } else {
-    //   const errorMessage = 'Token does not exist. Please consult your service provider.'
-
-    //   console.warn(errorMessage)
-    // }
 
     const response = await fetch(endpoint, payload)
 

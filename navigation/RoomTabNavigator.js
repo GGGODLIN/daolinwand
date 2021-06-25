@@ -79,9 +79,6 @@ function MyTabBar({ state, descriptors, navigation, position }) {
 
                     return (
                         <TouchableOpacity
-                            // accessibilityRole="button"
-                            // accessibilityState={isFocused ? { selected: true } : {}}
-                            // accessibilityLabel={options.tabBarAccessibilityLabel}
                             onPress={onPress}
                             onLongPress={onLongPress}
                             style={[{ minWidth: 100, borderColor: complexTheme?.highlightThemeColor, borderBottomWidth: isFocused ? 2 : 0, paddingBottom: isFocused ? 0 : 2, height: 50, justifyContent: 'center', alignItems: 'center' }]}
@@ -166,16 +163,75 @@ function RoomTabNavigator(props) {
 
     return (
         <Tab.Navigator
-            // tabBarOptions={{
-            //     activeTintColor: complexTheme?.mainThemeColor,
-            //     inactiveTintColor: complexTheme?.invalid?.color,
-            //     labelStyle: { fontWeight: 'bold' },
-            //     indicatorStyle: { backgroundColor: complexTheme?.highlightThemeColor },
-            //     scrollEnabled: true,
-            //     tabStyle: { width: 100 },
-            //     style: { width: 300 },
-            //     bounces: true
-            // }}
+            tabBar={props => <MyTabBar {...props} />}
+        >{userRooms?.map?.((room) =>
+            <Tab.Screen
+                name={`RoomScreen_${room?.id}`}
+                component={RoomScreen}
+                options={({ navigation, route }) => ({
+                    title: room?.name
+                })}
+                initialParams={{ ...room }}
+            />)}
+        </Tab.Navigator>
+    );
+}
+
+
+//testing
+function RoomTabNavigator_2(props) {
+    const {
+        t,
+        appLanguage,
+        setAppLanguage,
+        initializeAppLanguage,
+        themeStyle,
+        appTheme,
+        setAppTheme,
+        componentStyles,
+        complexTheme
+    } = useContext(LocalizationContext)
+    const {
+        token,
+        getToken,
+        api,
+        jsonServerBaseUrl,
+    } = useContext(BackendContext)
+
+
+
+
+    const getUserRooms = async () => {
+        let res = await dispatchFetchRequest(
+            api(jsonServerBaseUrl)?.roomScreen.getUserRooms,
+            {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+            },
+            response => {
+                response.json().then(data => {
+                    unstable_batchedUpdates(() => {
+                        setUserRooms(data)
+                        setIsloading(false)
+                    })
+                })
+            },
+            response => {
+                console.warn('getUserDataFail', response)
+            }
+        )
+        return await res.json()
+    }
+
+    if (isLoading) {
+        return (<LoadingPage />)
+    }
+
+    return (
+        <Tab.Navigator
             tabBar={props => <MyTabBar {...props} />}
         >{userRooms?.map?.((room) =>
             <Tab.Screen
