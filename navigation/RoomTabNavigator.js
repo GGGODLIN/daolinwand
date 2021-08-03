@@ -10,6 +10,7 @@ import { LocalizationContext } from '../locales/LocaleContext';
 import { dispatchFetchRequest } from "../constants/Backend";
 import { useFocusEffect } from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
+import { goldenSample } from '../data'
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -121,6 +122,7 @@ function RoomTabNavigator(props) {
     } = useContext(BackendContext)
 
     const [userRooms, setUserRooms] = useState(null);
+    const [userSpaces, setUserSpaces] = useState(null);
     const [isLoading, setIsloading] = useState(true)
 
 
@@ -133,29 +135,35 @@ function RoomTabNavigator(props) {
     );
 
     const getUserRooms = async () => {
-        let res = await dispatchFetchRequest(
-            api(jsonServerBaseUrl)?.roomScreen.getUserRooms,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-            },
-            response => {
-                response.json().then(data => {
-                    unstable_batchedUpdates(() => {
-                        setUserRooms(data)
-                        setIsloading(false)
-                    })
-                })
-            },
-            response => {
-                console.warn('getUserDataFail', response)
-            }
-        )
-        return await res.json()
+        // let res = await dispatchFetchRequest(
+        //     api(jsonServerBaseUrl)?.roomScreen.getUserRooms,
+        //     {
+        //         method: 'GET',
+        //         headers: {
+        //             'Content-Type': 'application/json',
+        //             'Accept': 'application/json'
+        //         },
+        //     },
+        //     response => {
+        //         response.json().then(data => {
+        //             unstable_batchedUpdates(() => {
+        //                 setUserRooms(data)
+        //                 setIsloading(false)
+        //             })
+        //         })
+        //     },
+        //     response => {
+        //         console.warn('getUserDataFail', response)
+        //     }
+        // )
+        // return await res.json()
+
+        let tempSpaces = goldenSample?.spaces
+        console.log('tempSpaces', JSON.stringify(tempSpaces?.map((space) => ({ ...space, devices: goldenSample?.devices?.filter((device) => device?.spaceId === space?.id) }))))
+        setUserSpaces(tempSpaces?.map((space) => ({ ...space, devices: goldenSample?.devices?.filter((device) => device?.spaceId === space?.id) })))
+        setIsloading(false)
     }
+
 
     if (isLoading) {
         return (<LoadingPage />)
@@ -164,14 +172,14 @@ function RoomTabNavigator(props) {
     return (
         <Tab.Navigator
             tabBar={props => <MyTabBar {...props} />}
-        >{userRooms?.map?.((room) =>
+        >{userSpaces?.map?.((space) =>
             <Tab.Screen
-                name={`RoomScreen_${room?.id}`}
+                name={`RoomScreen_${space?.id}`}
                 component={RoomScreen}
                 options={({ navigation, route }) => ({
-                    title: room?.name
+                    title: space?.name
                 })}
-                initialParams={{ ...room }}
+                initialParams={{ ...space }}
             />)}
         </Tab.Navigator>
     );
@@ -233,14 +241,14 @@ function RoomTabNavigator_2(props) {
     return (
         <Tab.Navigator
             tabBar={props => <MyTabBar {...props} />}
-        >{userRooms?.map?.((room) =>
+        >{userSpaces?.map?.((space) =>
             <Tab.Screen
-                name={`RoomScreen_${room?.id}`}
+                name={`RoomScreen_${space?.id}`}
                 component={RoomScreen}
                 options={({ navigation, route }) => ({
-                    title: room?.name
+                    title: space?.name
                 })}
-                initialParams={{ ...room }}
+                initialParams={{ ...space }}
             />)}
         </Tab.Navigator>
     );

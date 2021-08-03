@@ -16,7 +16,7 @@ export const BackendProvider = ({ children }) => {
     console.log('BackendProvider Render!')
 
     const [baseUrl, setBaseUrl] = useState('http://192.168.1.14:3000');
-    const [jsonServerBaseUrl, setJsonServerBaseUrl] = useState('http://192.168.142.73:4000');
+    const [jsonServerBaseUrl, setJsonServerBaseUrl] = useState('http://192.168.1.106:8080');
     const [iconPath, setIconPath] = useState('/static/icons/');
     const [username, setUsername] = useState('skymap_admin');
     const [password, setPassword] = useState('password');
@@ -31,6 +31,7 @@ export const BackendProvider = ({ children }) => {
         },
         roomScreen: {
             getUserRooms: `${baseUrl}/getRooms`,
+            getDevices: `${baseUrl}/getDevices`,
         }
     })
 
