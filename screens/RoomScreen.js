@@ -9,6 +9,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { LoadingPage } from '../components/LoadingPage';
 import { VectorIcon } from '../components/VectorIcon'
 import { goldenSample } from '../data'
+import { testStr } from '../utils/mqttService';
+import { mqttService } from '../utils/mqttService';
+import { Client, options, websocketUrl } from '../utils/mqttService';
 
 export const RoomScreen = ({ navigation, route }) => {
     const {
@@ -37,6 +40,24 @@ export const RoomScreen = ({ navigation, route }) => {
     const [userScenes, setUserScenes] = useState(null);
     const [userDevices, setUserDevices] = useState(route?.params?.devices);
     const [userSpaces, setUserSpaces] = useState(null);
+
+    useEffect(() => {
+        console.log('testStr!!', testStr, options, websocketUrl)
+        // mqttService.subscribe(
+        //     Client,
+        //     `/GOLD/telemetry/GOLD-WuFLXpRyItnE/#`,
+        // );
+        // const callBack = (payload) => {
+        //     //console.log('cb payload', payload);
+        //     let result;
+        //     result = handlePayload(payload);
+        //     console.log('onMessage callback', result, JSON.parse(payload));
+        // };
+        // mqttService.onMessage(Client, callBack);
+
+        // return () => mqttService.closeConnection(Client);
+
+    }, []);
 
     // useFocusEffect(
     //     useCallback(() => {
@@ -113,21 +134,7 @@ export const RoomScreen = ({ navigation, route }) => {
 
                                 <View style={{ width: '100%', flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                     {userDevices?.map?.((device, index) => (
-                                        <TouchableOpacity style={[componentStyles?.shadowBox,
-                                        (!!device?.state?.active ? { backgroundColor: "#50ab94" } : { backgroundColor: "#fff" }),
-                                        { padding: 8, width: '30%', aspectRatio: 1, marginVertical: '2.5%', marginHorizontal: (index % 3) === 1 ? '5%' : 0 }]}>
-                                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                                <View style={{ flexDirection: 'column' }}>
-                                                    <Text style={[{ fontWeight: 'bold' }, (!!device?.state?.active ? { color: "#fff" } : { color: "gray" })]}>{device?.name}</Text>
-                                                    {/* <Text style={[{ fontSize: 12, color: complexTheme?.placeholderTextColor }]}>{device?.placeName}</Text> */}
-                                                </View>
-                                                <VectorIcon iconName={"power-off"} size={16} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
-                                            </View>
-                                            <View style={{ alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
-                                                <VectorIcon iconName={device?.icon} size={((Dimensions.get("window").width - 20) * 0.3 - 54) / 2} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
-                                                <Text style={[{ fontSize: 12 }, (!!device?.state?.active ? { color: "#fff" } : { color: "gray" })]}>{device?.state?.displayStatus}</Text>
-                                            </View>
-                                        </TouchableOpacity>
+                                        <DeviceCard device={device} index={index} />
                                     ))}
 
 
@@ -142,3 +149,67 @@ export const RoomScreen = ({ navigation, route }) => {
 
 }
 
+
+
+const DeviceCard = ({ device, index }) => {
+    const {
+        t,
+        appLanguage,
+        setAppLanguage,
+        initializeAppLanguage,
+        themeStyle,
+        appTheme,
+        setAppTheme,
+        componentStyles,
+        complexTheme
+    } = useContext(LocalizationContext)
+
+    const {
+        token,
+        getToken,
+        api,
+        jsonServerBaseUrl,
+    } = useContext(BackendContext)
+
+
+
+
+
+    const handlePayload = (payload) => {
+        // console.log('handlePayload', payload);
+
+        const { dvId, dvType, contents } = JSON.parse(payload);
+        if (dvType === 265) {
+            console.log('dvType === 265');
+            dispatch({
+                type: 'SWITCH_LIGHT',
+                payload: {
+                    dvId: dvId,
+                    contents: contents,
+                },
+            });
+        }
+    };
+
+
+    return (
+        <TouchableOpacity
+            style={[componentStyles?.shadowBox,
+            (!!device?.state?.active ? { backgroundColor: "#50ab94" } : { backgroundColor: "#fff" }),
+            { padding: 8, width: '30%', aspectRatio: 1, marginVertical: '2.5%', marginHorizontal: (index % 3) === 1 ? '5%' : 0 }]}
+
+        >
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <View style={{ flexDirection: 'column' }}>
+                    <Text style={[{ fontWeight: 'bold' }, (!!device?.state?.active ? { color: "#fff" } : { color: "gray" })]}>{device?.name}</Text>
+                    {/* <Text style={[{ fontSize: 12, color: complexTheme?.placeholderTextColor }]}>{device?.placeName}</Text> */}
+                </View>
+                <VectorIcon iconName={"power-off"} size={16} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
+            </View>
+            <View style={{ alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
+                <VectorIcon iconName={device?.icon} size={((Dimensions.get("window").width - 20) * 0.3 - 54) / 2} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
+                <Text style={[{ fontSize: 12 }, (!!device?.state?.active ? { color: "#fff" } : { color: "gray" })]}>{device?.state?.displayStatus}</Text>
+            </View>
+        </TouchableOpacity>
+    )
+}

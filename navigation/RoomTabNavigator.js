@@ -122,7 +122,7 @@ function RoomTabNavigator(props) {
     } = useContext(BackendContext)
 
     const [userRooms, setUserRooms] = useState(null);
-    const [userSpaces, setUserSpaces] = useState(null);
+    const [userSpaces, setUserSpaces] = useState(goldenSample?.spaces?.map((space) => ({ ...space, devices: goldenSample?.devices?.filter((device) => device?.spaceId === space?.id) })));
     const [isLoading, setIsloading] = useState(true)
 
 
@@ -159,7 +159,6 @@ function RoomTabNavigator(props) {
         // return await res.json()
 
         let tempSpaces = goldenSample?.spaces
-        console.log('tempSpaces', JSON.stringify(tempSpaces?.map((space) => ({ ...space, devices: goldenSample?.devices?.filter((device) => device?.spaceId === space?.id) }))))
         setUserSpaces(tempSpaces?.map((space) => ({ ...space, devices: goldenSample?.devices?.filter((device) => device?.spaceId === space?.id) })))
         setIsloading(false)
     }
