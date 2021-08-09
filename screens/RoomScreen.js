@@ -10,8 +10,8 @@ import { LoadingPage } from '../components/LoadingPage';
 import { VectorIcon } from '../components/VectorIcon'
 import { goldenSample } from '../data'
 import { testStr } from '../utils/mqttService';
-import { mqttService } from '../utils/mqttService';
-import { Client, options, websocketUrl } from '../utils/mqttService';
+import mqttService from '../utils/mqttService';
+import { Client } from '../utils/mqttService';
 
 export const RoomScreen = ({ navigation, route }) => {
     const {
@@ -41,24 +41,40 @@ export const RoomScreen = ({ navigation, route }) => {
     const [userDevices, setUserDevices] = useState(route?.params?.devices);
     const [userSpaces, setUserSpaces] = useState(null);
 
-    useEffect(() => {
-        console.log('testStr!!', testStr, options, websocketUrl)
-        // mqttService.subscribe(
-        //     Client,
-        //     `/GOLD/telemetry/GOLD-WuFLXpRyItnE/#`,
-        // );
-        // const callBack = (payload) => {
-        //     //console.log('cb payload', payload);
-        //     let result;
-        //     result = handlePayload(payload);
-        //     console.log('onMessage callback', result, JSON.parse(payload));
-        // };
-        // mqttService.onMessage(Client, callBack);
 
-        // return () => mqttService.closeConnection(Client);
+    useEffect(() => {
+        mqttService.subscribe(
+            Client,
+            `/GOLD/telemetry/GOLD-WuFLXpRyItnE/#`,
+        );
+        const callBack = (payload) => {
+            //console.log('cb payload', payload);
+            let result;
+            result = handlePayload(payload);
+            console.log('onMessage callback', result, JSON.parse(payload));
+        };
+        mqttService.onMessage(Client, callBack);
+
+        return () => mqttService.closeConnection(Client);
 
     }, []);
 
+
+    const handlePayload = (payload) => {
+        // console.log('handlePayload', payload);
+
+        const { dvId, dvType, contents } = JSON.parse(payload);
+        if (dvType === 265) {
+            console.log('dvType === 265');
+            dispatch({
+                type: 'SWITCH_LIGHT',
+                payload: {
+                    dvId: dvId,
+                    contents: contents,
+                },
+            });
+        }
+    };
     // useFocusEffect(
     //     useCallback(() => {
     //         Promise.all([getUserData(), getUserData_Demo()])
@@ -172,23 +188,28 @@ const DeviceCard = ({ device, index }) => {
     } = useContext(BackendContext)
 
 
-
-
-
-    const handlePayload = (payload) => {
-        // console.log('handlePayload', payload);
-
-        const { dvId, dvType, contents } = JSON.parse(payload);
-        if (dvType === 265) {
-            console.log('dvType === 265');
-            dispatch({
-                type: 'SWITCH_LIGHT',
-                payload: {
-                    dvId: dvId,
-                    contents: contents,
+    const handlePublish = () => {
+        let notificationObj = {
+            cts: new Date().getTime(),
+            msgType: 'notify',
+            postman: 'shl-GW123',
+            from: 'shl-afd11123',
+            to: device?.dvId,
+            ntfTp: 1,
+            contents: [
+                {
+                    objId: 1,
+                    name: 'Switch',
+                    rt: [`oic.r.switch.binary`],
+                    value: true,
                 },
-            });
-        }
+            ],
+        };
+        mqttService.publish(
+            Client,
+            `/GOLD/notify/GOLD-WuFLXpRyItnE/`,
+            JSON.stringify(notificationObj),
+        );
     };
 
 
@@ -197,7 +218,7 @@ const DeviceCard = ({ device, index }) => {
             style={[componentStyles?.shadowBox,
             (!!device?.state?.active ? { backgroundColor: "#50ab94" } : { backgroundColor: "#fff" }),
             { padding: 8, width: '30%', aspectRatio: 1, marginVertical: '2.5%', marginHorizontal: (index % 3) === 1 ? '5%' : 0 }]}
-
+            onPress={() => handlePublish()}
         >
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'column' }}>

@@ -1,11 +1,11 @@
 // import mqtt from 'mqtt';
 import { connect } from 'mqtt/dist/mqtt';
 
-export const websocketUrl = 'ws://elderwand2.g13.group:8083/mqtt';
+const websocketUrl = 'ws://elderwand2.g13.group:8083/mqtt';
 const apiEndpoint = '/3NOv/notify/3NOv-V4uppJrqeKCX/';
 const subTest = '/3NOv/telemetry/#';
 
-export const options = {
+const options = {
   clean: true, // 保留回话
   connectTimeout: 4000, // 超时时间
   clientId: 'web_mqttjs_2763cd800a',
@@ -22,7 +22,7 @@ function getClient() {
   return client;
 }
 
-export function subscribe(client, topic) {
+function subscribe(client, topic) {
   console.log('subscribe!!!!', topic)
   const callBack = (err, granted) => {
     if (err) {
@@ -55,15 +55,14 @@ function closeConnection(client) {
 
 function publish(client, topic, payload) {
   console.log('publish', topic, payload)
-  console.log('publish2', client)
-  client.publish(topic, payload, { qos: 1 }, (e) => console.log(e));
+  client.publish(topic, payload, { qos: 0 }, (e) => console.log(e));
 }
 
 function getApiEndpoint() {
   return apiEndpoint;
 }
 
-export const mqttService = {
+const mqttService = {
   getClient,
   subscribe,
   onMessage,
@@ -74,4 +73,4 @@ export const mqttService = {
 };
 
 export const Client = connect(websocketUrl, options);
-export const testStr = '123'
+export default mqttService;
