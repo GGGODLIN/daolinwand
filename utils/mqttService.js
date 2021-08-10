@@ -34,19 +34,19 @@ function subscribe(client, topic) {
   return client.subscribe(topic, callBack);
 }
 
-function onMessage(client, callBack) {
+function onMessage(client, callBack, userDevices) {
   console.log('onMessage!!!');
   client.on('message', (topic, payload, packet) => {
     const message = String.fromCharCode.apply(null, new Uint8Array(payload));
     // const message = new TextDecoder('utf-8').decode(payload);
     console.log('client.on', message);
     // callBack({topic: topic, message: message});
-    callBack(message);
+    callBack(message, userDevices);
   });
 }
 
 function unsubscribe(client, topic) {
-  client.unsubscribe(apiEndpoint + topic);
+  client.unsubscribe(topic);
 }
 
 function closeConnection(client) {

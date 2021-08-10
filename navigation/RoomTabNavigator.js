@@ -11,6 +11,9 @@ import { dispatchFetchRequest } from "../constants/Backend";
 import { useFocusEffect } from '@react-navigation/native';
 import Animated from 'react-native-reanimated';
 import { goldenSample } from '../data'
+import mqttService from '../utils/mqttService';
+import { Client } from '../utils/mqttService';
+import { SpaceContext } from '../context/SpaceContext'
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -121,9 +124,17 @@ function RoomTabNavigator(props) {
         jsonServerBaseUrl,
     } = useContext(BackendContext)
 
+    const {
+        userSpaces,
+        setUserSpaces,
+        userDevices,
+        setUserDevices
+    } = useContext(SpaceContext)
+
     const [userRooms, setUserRooms] = useState(null);
-    const [userSpaces, setUserSpaces] = useState(goldenSample?.spaces?.map((space) => ({ ...space, devices: goldenSample?.devices?.filter((device) => device?.spaceId === space?.id) })));
+    //const [userSpaces, setUserSpaces] = useState(goldenSample?.spaces?.map((space) => ({ ...space, devices: goldenSample?.devices?.filter((device) => device?.spaceId === space?.id) })));
     const [isLoading, setIsloading] = useState(true)
+    const [refreshFlag, setRefreshFlag] = useState(true)
 
 
     useFocusEffect(
@@ -158,10 +169,57 @@ function RoomTabNavigator(props) {
         // )
         // return await res.json()
 
-        let tempSpaces = goldenSample?.spaces
-        setUserSpaces(tempSpaces?.map((space) => ({ ...space, devices: goldenSample?.devices?.filter((device) => device?.spaceId === space?.id) })))
+        //let tempSpaces = goldenSample?.spaces
+        //setUserSpaces(tempSpaces?.map((space) => ({ ...space, devices: goldenSample?.devices?.filter((device) => device?.spaceId === space?.id) })))
         setIsloading(false)
     }
+
+    useEffect(() => {
+        let Client = mqttService.getClient()
+        mqttService.subscribe(
+            Client,
+            `/GOLD/telemetry/GOLD-WuFLXpRyItnE/#`,
+        );
+        const callBack = (payload, userDevices) => {
+            console.log('cb payload', JSON.stringify(payload));
+            let result;
+            result = handlePayload(payload, userDevices);
+            //console.log('onMessage callback', result, JSON.parse(payload));
+        };
+        mqttService.onMessage(Client, callBack, userDevices);
+
+        return () => mqttService.closeConnection(Client);
+
+    }, [refreshFlag]);
+
+
+    const handlePayload = (payload, userDevices) => {
+        console.log('handlePayload', payload);
+
+        const { dvId, dvType, contents } = JSON.parse(payload);
+        let newDevices = userDevices?.map((device) => {
+            if (device?.dvId === dvId) {
+                let newAttrs = [...device?.attrs]
+                newAttrs = newAttrs?.map((attr) => {
+                    let matchAttr = contents?.find((content) => attr?.createdRT === content?.rt?.[0])
+                    if (!!matchAttr) {
+                        return ({ ...attr, value: matchAttr?.value })
+                    } else {
+                        return attr
+                    }
+                })
+                return { ...device, attrs: newAttrs }
+            } else {
+                return device
+            }
+        })
+        //console.log('newDevices', JSON.stringify(newDevices?.find((device) => device?.dvId === 'GOLD-BqqNkb2WH1pL')))
+        setUserDevices(newDevices)
+        setUserSpaces(userSpaces?.map((space) => ({ ...space, devices: newDevices?.filter((device) => device?.spaceId === space?.id) })))
+        setRefreshFlag(!refreshFlag)
+    };
+
+    //console.log("userSpaces UP?", JSON.stringify(userSpaces))
 
 
     if (isLoading) {

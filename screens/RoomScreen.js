@@ -9,9 +9,9 @@ import { useFocusEffect } from '@react-navigation/native';
 import { LoadingPage } from '../components/LoadingPage';
 import { VectorIcon } from '../components/VectorIcon'
 import { goldenSample } from '../data'
-import { testStr } from '../utils/mqttService';
 import mqttService from '../utils/mqttService';
 import { Client } from '../utils/mqttService';
+import { SpaceContext } from '../context/SpaceContext'
 
 export const RoomScreen = ({ navigation, route }) => {
     const {
@@ -33,48 +33,41 @@ export const RoomScreen = ({ navigation, route }) => {
         jsonServerBaseUrl,
     } = useContext(BackendContext)
 
+    const {
+        userSpaces,
+        setUserSpaces
+    } = useContext(SpaceContext)
+
     const [isLoading, setIsloading] = useState(false)
     const [hasError, setHasError] = useState(false)
     const [userData, setUserData] = useState(null);
     const [userHomes, setUserHomes] = useState(null);
     const [userScenes, setUserScenes] = useState(null);
     const [userDevices, setUserDevices] = useState(route?.params?.devices);
-    const [userSpaces, setUserSpaces] = useState(null);
 
 
     useEffect(() => {
-        mqttService.subscribe(
-            Client,
-            `/GOLD/telemetry/GOLD-WuFLXpRyItnE/#`,
-        );
-        const callBack = (payload) => {
-            //console.log('cb payload', payload);
-            let result;
-            result = handlePayload(payload);
-            console.log('onMessage callback', result, JSON.parse(payload));
-        };
-        mqttService.onMessage(Client, callBack);
+        //console.log('userSpaces UP!!!', JSON.stringify(userSpaces?.find((space) => space?.id === route?.params?.id)?.devices))
+        setUserDevices(userSpaces?.find((space) => space?.id === route?.params?.id)?.devices)
 
-        return () => mqttService.closeConnection(Client);
-
-    }, []);
+    }, [userSpaces]);
 
 
-    const handlePayload = (payload) => {
-        // console.log('handlePayload', payload);
+    // const handlePayload = (payload) => {
+    //     console.log('handlePayload', payload);
 
-        const { dvId, dvType, contents } = JSON.parse(payload);
-        if (dvType === 265) {
-            console.log('dvType === 265');
-            dispatch({
-                type: 'SWITCH_LIGHT',
-                payload: {
-                    dvId: dvId,
-                    contents: contents,
-                },
-            });
-        }
-    };
+    //     const { dvId, dvType, contents } = JSON.parse(payload);
+    //     // if (dvType === 265) {
+    //     //     console.log('dvType === 265');
+    //     //     dispatch({
+    //     //         type: 'SWITCH_LIGHT',
+    //     //         payload: {
+    //     //             dvId: dvId,
+    //     //             contents: contents,
+    //     //         },
+    //     //     });
+    //     // }
+    // };
     // useFocusEffect(
     //     useCallback(() => {
     //         Promise.all([getUserData(), getUserData_Demo()])
@@ -122,10 +115,7 @@ export const RoomScreen = ({ navigation, route }) => {
         return await res.json()
     }
 
-    const getUserData_Demo = async () => {
-        let tempSpaces = goldenSample?.spaces
-        setUserSpaces(tempSpaces?.map((space) => ({ ...space, devices: goldenSample?.devices?.filter((device) => device?.spaceId === space?.id) })))
-    }
+
 
     if (isLoading) {
         return (<LoadingPage />)
@@ -187,8 +177,15 @@ const DeviceCard = ({ device, index }) => {
         jsonServerBaseUrl,
     } = useContext(BackendContext)
 
+    const [isActive, setIsActive] = useState(parseDeviceIsActive(device))
 
-    const handlePublish = () => {
+    useEffect(() => {
+        console.log('parseDeviceIsActive', device?.name, JSON.stringify(device))
+        setIsActive(parseDeviceIsActive(device))
+
+    }, [parseDeviceIsActive(device)]);
+
+    const handleSwitch = () => {
         let notificationObj = {
             cts: new Date().getTime(),
             msgType: 'notify',
@@ -201,7 +198,7 @@ const DeviceCard = ({ device, index }) => {
                     objId: 1,
                     name: 'Switch',
                     rt: [`oic.r.switch.binary`],
-                    value: true,
+                    value: !isActive,
                 },
             ],
         };
@@ -210,27 +207,42 @@ const DeviceCard = ({ device, index }) => {
             `/GOLD/notify/GOLD-WuFLXpRyItnE/`,
             JSON.stringify(notificationObj),
         );
+        console.log('handleSwitch', device?.name)
+        setIsActive(!isActive)
     };
 
 
     return (
         <TouchableOpacity
             style={[componentStyles?.shadowBox,
-            (!!device?.state?.active ? { backgroundColor: "#50ab94" } : { backgroundColor: "#fff" }),
+            (!!isActive ? { backgroundColor: "#50ab94" } : { backgroundColor: "#fff" }),
             { padding: 8, width: '30%', aspectRatio: 1, marginVertical: '2.5%', marginHorizontal: (index % 3) === 1 ? '5%' : 0 }]}
-            onPress={() => handlePublish()}
+            onPress={() => handleSwitch()}
         >
             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ flexDirection: 'column' }}>
-                    <Text style={[{ fontWeight: 'bold' }, (!!device?.state?.active ? { color: "#fff" } : { color: "gray" })]}>{device?.name}</Text>
+                    <Text style={[{ fontWeight: 'bold' }, (!!isActive ? { color: "#fff" } : { color: "gray" })]}>{device?.name}</Text>
                     {/* <Text style={[{ fontSize: 12, color: complexTheme?.placeholderTextColor }]}>{device?.placeName}</Text> */}
                 </View>
-                <VectorIcon iconName={"power-off"} size={16} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
+                <VectorIcon iconName={"power-off"} size={16} color={!!isActive ? "green" : complexTheme?.invalid?.color} />
             </View>
             <View style={{ alignItems: 'center', flex: 1, justifyContent: 'flex-end' }}>
-                <VectorIcon iconName={device?.icon} size={((Dimensions.get("window").width - 20) * 0.3 - 54) / 2} color={!!device?.state?.active ? "green" : complexTheme?.invalid?.color} />
-                <Text style={[{ fontSize: 12 }, (!!device?.state?.active ? { color: "#fff" } : { color: "gray" })]}>{device?.state?.displayStatus}</Text>
+                <VectorIcon iconName={device?.icon} size={((Dimensions.get("window").width - 20) * 0.3 - 54) / 2} color={!!isActive ? "green" : complexTheme?.invalid?.color} />
+                <Text style={[{ fontSize: 12 }, (!!isActive ? { color: "#fff" } : { color: "gray" })]}>{device?.state?.displayStatus}</Text>
             </View>
         </TouchableOpacity>
     )
+}
+
+
+const parseDeviceIsActive = (device) => {
+    if (device?.deviceType === 265) {
+        if (!!device?.attrs?.find?.((attr) => attr?.createdRT === 'oic.r.switch.binary')?.value) {
+            return true
+        } else {
+            return false
+        }
+    } else {
+        return false
+    }
 }
