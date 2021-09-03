@@ -14,6 +14,7 @@ import { goldenSample } from '../data'
 import mqttService from '../utils/mqttService';
 import { Client } from '../utils/mqttService';
 import { SpaceContext } from '../context/SpaceContext'
+import { connect } from 'mqtt/dist/mqtt';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -128,7 +129,8 @@ function RoomTabNavigator(props) {
         userSpaces,
         setUserSpaces,
         userDevices,
-        setUserDevices
+        setUserDevices,
+        handlePayload
     } = useContext(SpaceContext)
 
     const [userRooms, setUserRooms] = useState(null);
@@ -174,50 +176,137 @@ function RoomTabNavigator(props) {
         setIsloading(false)
     }
 
+    // useEffect(() => {
+    //     console.log('getClient!')
+    //     let Client = mqttService.getClient()
+
+    //     const callBack = (payload, userDevices) => {
+    //         console.log('cb payload', JSON.stringify(payload));
+    //         handlePayload(payload, userDevices);
+    //         setRefreshFlag(!refreshFlag)
+    //     };
+    //     mqttService.subscribe(
+    //         Client,
+    //         `/GOLD/telemetry/GOLD-WuFLXpRyItnE/#`,
+    //         callBack,
+    //         userDevices
+    //     );
+    //     //mqttService.onMessage(Client, callBack, userDevices);
+
+    //     return () => {
+    //         console.log('closeConnection')
+    //         mqttService.closeConnection(Client)
+    //     };
+
+    // }, [refreshFlag]);
+
     useEffect(() => {
-        let Client = mqttService.getClient()
+
+        const callBack = (payload, userDevices) => {
+            console.log('cb payload', JSON.stringify(payload));
+            handlePayload(payload);
+            setRefreshFlag(!refreshFlag)
+        };
         mqttService.subscribe(
             Client,
             `/GOLD/telemetry/GOLD-WuFLXpRyItnE/#`,
+            callBack,
+            userDevices
         );
-        const callBack = (payload, userDevices) => {
-            console.log('cb payload', JSON.stringify(payload));
-            let result;
-            result = handlePayload(payload, userDevices);
-            //console.log('onMessage callback', result, JSON.parse(payload));
+        //mqttService.onMessage(Client, callBack, userDevices);
+
+        return () => {
+            console.log('closeConnection')
+            mqttService.closeConnection(Client)
         };
-        mqttService.onMessage(Client, callBack, userDevices);
 
-        return () => mqttService.closeConnection(Client);
+    }, []);
 
-    }, [refreshFlag]);
+    // useEffect(() => {
+    //     const websocketUrl = 'ws://elderwand2.g13.group:8083/mqtt';
+
+    //     const options = {
+    //         clean: true, // 保留回话
+    //         connectTimeout: 40000, // 超时时间
+    //         clientId: 'web_mqttjs_2763cd800a',
+    //         username: 'admin',
+    //         password: 'public',
+    //     };
+
+    //     const client = connect(websocketUrl, options);
+
+    //     client.on('connect', function () {
+    //         client.subscribe(`/GOLD/telemetry/GOLD-WuFLXpRyItnE/#`, function (err) {
+    //             if (!err) {
+    //                 //client.publish('presence', 'Hello mqtt')
+    //                 console.log('subscribe')
+    //             }
+    //         })
+    //     })
+
+    //     client.on('message', function (topic, payload) {
+    //         // message is Buffer
+
+    //         const message = String.fromCharCode.apply(null, new Uint8Array(payload));
+    //         console.log('client.on', message);
+    //         handlePayload(message, userDevices);
+    //         setRefreshFlag(!refreshFlag)
+
+    //     })
 
 
-    const handlePayload = (payload, userDevices) => {
-        console.log('handlePayload', payload);
 
-        const { dvId, dvType, contents } = JSON.parse(payload);
-        let newDevices = userDevices?.map((device) => {
-            if (device?.dvId === dvId) {
-                let newAttrs = [...device?.attrs]
-                newAttrs = newAttrs?.map((attr) => {
-                    let matchAttr = contents?.find((content) => attr?.createdRT === content?.rt?.[0])
-                    if (!!matchAttr) {
-                        return ({ ...attr, value: matchAttr?.value })
-                    } else {
-                        return attr
-                    }
-                })
-                return { ...device, attrs: newAttrs }
-            } else {
-                return device
-            }
-        })
-        //console.log('newDevices', JSON.stringify(newDevices?.find((device) => device?.dvId === 'GOLD-BqqNkb2WH1pL')))
-        setUserDevices(newDevices)
-        setUserSpaces(userSpaces?.map((space) => ({ ...space, devices: newDevices?.filter((device) => device?.spaceId === space?.id) })))
-        setRefreshFlag(!refreshFlag)
-    };
+
+
+    //     // console.log('getClient!')
+    //     // let Client = mqttService.getClient()
+
+    //     // const callBack = (payload, userDevices) => {
+    //     //     console.log('cb payload', JSON.stringify(payload));
+    //     //     handlePayload(payload, userDevices);
+    //     //     setRefreshFlag(!refreshFlag)
+    //     // };
+    //     // mqttService.subscribe(
+    //     //     Client,
+    //     //     `/GOLD/telemetry/GOLD-WuFLXpRyItnE/#`,
+    //     //     callBack,
+    //     //     userDevices
+    //     // );
+    //     // //mqttService.onMessage(Client, callBack, userDevices);
+
+    //     return () => {
+    //         client.end()
+    //     };
+
+    // }, [refreshFlag]);
+
+
+
+    // const handlePayload = (payload, userDevices) => {
+    //     console.log('handlePayload', payload);
+
+    //     const { dvId, dvType, contents } = JSON.parse(payload);
+    //     let newDevices = userDevices?.map((device) => {
+    //         if (device?.dvId === dvId) {
+    //             let newAttrs = [...device?.attrs]
+    //             newAttrs = newAttrs?.map((attr) => {
+    //                 let matchAttr = contents?.find((content) => attr?.createdRT === content?.rt?.[0])
+    //                 if (!!matchAttr) {
+    //                     return ({ ...attr, value: matchAttr?.value })
+    //                 } else {
+    //                     return attr
+    //                 }
+    //             })
+    //             return { ...device, attrs: newAttrs }
+    //         } else {
+    //             return device
+    //         }
+    //     })
+    //     //console.log('newDevices', JSON.stringify(newDevices?.find((device) => device?.dvId === 'GOLD-BqqNkb2WH1pL')))
+    //     setUserDevices(newDevices)
+    //     setUserSpaces(userSpaces?.map((space) => ({ ...space, devices: newDevices?.filter((device) => device?.spaceId === space?.id) })))
+
+    // };
 
     //console.log("userSpaces UP?", JSON.stringify(userSpaces))
 

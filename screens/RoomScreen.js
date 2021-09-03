@@ -140,7 +140,7 @@ export const RoomScreen = ({ navigation, route }) => {
 
                                 <View style={{ width: '100%', flex: 1, flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                     {userDevices?.map?.((device, index) => (
-                                        <DeviceCard device={device} index={index} />
+                                        <DeviceCard propDevice={device} index={index} />
                                     ))}
 
 
@@ -157,7 +157,7 @@ export const RoomScreen = ({ navigation, route }) => {
 
 
 
-const DeviceCard = ({ device, index }) => {
+const DeviceCard = ({ propDevice, index }) => {
     const {
         t,
         appLanguage,
@@ -177,13 +177,35 @@ const DeviceCard = ({ device, index }) => {
         jsonServerBaseUrl,
     } = useContext(BackendContext)
 
+    const {
+        event
+    } = useContext(SpaceContext)
+
+
+    const [device, setDevice] = useState(propDevice)
     const [isActive, setIsActive] = useState(parseDeviceIsActive(device))
 
     useEffect(() => {
-        console.log('parseDeviceIsActive', device?.name, JSON.stringify(device))
+        //console.log('parseDeviceIsActive', device?.name, JSON.stringify(device))
         setIsActive(parseDeviceIsActive(device))
 
     }, [parseDeviceIsActive(device)]);
+
+    useEffect(() => {
+        if (event?.dvId === device?.dvId) {
+            let newAttrs = [...device?.attrs]
+            newAttrs = newAttrs?.map((attr) => {
+                let matchAttr = event?.contents?.find((content) => attr?.createdRT === content?.rt?.[0])
+                if (!!matchAttr) {
+                    return ({ ...attr, value: matchAttr?.value })
+                } else {
+                    return attr
+                }
+            })
+            setDevice({ ...device, attrs: newAttrs })
+        }
+
+    }, [event]);
 
     const handleSwitch = () => {
         let notificationObj = {

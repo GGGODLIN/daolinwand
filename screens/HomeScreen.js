@@ -63,31 +63,158 @@ export const HomeScreen = ({ navigation }) => {
         }, [])
     );
 
+    // const getUserData = async () => {
+    //     let res = await dispatchFetchRequest(
+    //         api(jsonServerBaseUrl)?.homeScreen.getUserHomeData,
+    //         {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Accept': 'application/json'
+    //             },
+    //         },
+    //         response => {
+    //             response.json().then(data => {
+    //                 unstable_batchedUpdates(() => {
+    //                     setUserData(data)
+    //                     setUserHomes(data?.userHomes)
+    //                     setUserScenes(data?.userScenes)
+    //                     setUserDevices(data?.favoriteDevice)
+    //                 })
+    //             })
+    //         },
+    //         response => {
+    //             console.warn('getUserDataFail', response)
+    //         }
+    //     )
+    //     return await res.json()
+    // }
+
     const getUserData = async () => {
-        let res = await dispatchFetchRequest(
-            api(jsonServerBaseUrl)?.homeScreen.getUserHomeData,
-            {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+        let data = {
+            "userName": "Jagger",
+            "userHomes": [
+                {
+                    "homeName": "我的家"
                 },
-            },
-            response => {
-                response.json().then(data => {
-                    unstable_batchedUpdates(() => {
-                        setUserData(data)
-                        setUserHomes(data?.userHomes)
-                        setUserScenes(data?.userScenes)
-                        setUserDevices(data?.favoriteDevice)
-                    })
-                })
-            },
-            response => {
-                console.warn('getUserDataFail', response)
-            }
-        )
-        return await res.json()
+                {
+                    "homeName": "我的家二"
+                }
+            ],
+            "userScenes": [
+                {
+                    "name": "回家",
+                    "active": true,
+                    "icon": "TheDoorIsClosed"
+                },
+                {
+                    "name": "離家",
+                    "active": false,
+                    "icon": "DoorOpen"
+                },
+                {
+                    "name": "夜晚",
+                    "active": false,
+                    "icon": "moon"
+                },
+                {
+                    "name": "就餐",
+                    "active": false,
+                    "icon": "dinner"
+                },
+                {
+                    "name": "派對",
+                    "active": false,
+                    "icon": "party"
+                },
+                {
+                    "name": "看劇",
+                    "active": false,
+                    "icon": "television"
+                }
+            ],
+            "favoriteDevice": [
+                {
+                    "name": "主燈",
+                    "icon": "ALamp",
+                    "placeName": "1F客廳",
+                    "state": {
+                        "active": true,
+                        "displayStatus": "開"
+                    }
+                },
+                {
+                    "name": "燈1",
+                    "icon": "ALamp",
+                    "placeName": "1F客廳",
+                    "state": {
+                        "active": true,
+                        "displayStatus": "開"
+                    }
+                },
+                {
+                    "name": "燈2",
+                    "icon": "ALamp",
+                    "placeName": "1F客廳",
+                    "state": {
+                        "active": true,
+                        "displayStatus": "開"
+                    }
+                },
+                {
+                    "name": "紗窗",
+                    "icon": "CloseDoorsAndWindows",
+                    "placeName": "1F客廳",
+                    "state": {
+                        "active": true,
+                        "displayStatus": "開"
+                    }
+                },
+                {
+                    "name": "布簾",
+                    "icon": "DoorsAndWindows",
+                    "placeName": "主臥",
+                    "state": {
+                        "active": false,
+                        "displayStatus": "關"
+                    }
+                },
+                {
+                    "name": "主燈",
+                    "icon": "ALamp",
+                    "placeName": "主臥2",
+                    "state": {
+                        "active": true,
+                        "displayStatus": "開"
+                    }
+                },
+                {
+                    "name": "主燈7",
+                    "icon": "ALamp",
+                    "placeName": "主臥7",
+                    "state": {
+                        "active": false,
+                        "displayStatus": "關"
+                    }
+                },
+                {
+                    "name": "主燈8",
+                    "icon": "ALamp",
+                    "placeName": "主臥8",
+                    "state": {
+                        "active": false,
+                        "displayStatus": "關"
+                    }
+                }
+            ]
+        }
+
+        unstable_batchedUpdates(() => {
+            setUserData(data)
+            setUserHomes(data?.userHomes)
+            setUserScenes(data?.userScenes)
+            setUserDevices(data?.favoriteDevice)
+        })
     }
 
     if (isLoading) {
